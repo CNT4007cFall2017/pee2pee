@@ -37,7 +37,7 @@ public class StartClient {
                     break;
                 }
 
-                //System.out.println("Server says " + (String)in.readObject());
+                System.out.println("Server says " + (String)in.readObject());
             }
             out.close();
             in.close();
