@@ -1,29 +1,46 @@
-/**
- * Created by chase on 10/18/2017.
- */
-// File Name GreetingClient.java
+// File Name GreetingServer.java
 import java.net.*;
 import java.io.*;
 
-public class StartServer {
+public class StartServer extends Thread {
+    private ServerSocket serverSocket;
+
+    public StartServer(int port) throws IOException {
+        serverSocket = new ServerSocket(port);
+        serverSocket.setSoTimeout(10000);
+    }
+
+    public void run() {
+        while(true) {
+            try {
+                System.out.println("Waiting for client on port " +
+                        serverSocket.getLocalPort() + "...");
+                Socket server = serverSocket.accept();
+
+                System.out.println("Just connected to " + server.getRemoteSocketAddress());
+                DataInputStream in = new DataInputStream(server.getInputStream());
+
+                System.out.println(in.readUTF());
+                DataOutputStream out = new DataOutputStream(server.getOutputStream());
+                out.writeUTF("Thank you for connecting to " + server.getLocalSocketAddress()
+                        + "\nGoodbye!");
+                server.close();
+
+            }catch(SocketTimeoutException s) {
+                System.out.println("Socket timed out!");
+                break;
+            }catch(IOException e) {
+                e.printStackTrace();
+                break;
+            }
+        }
+    }
 
     public static void main(String [] args) {
-        String serverName = args[0];
-        int port = Integer.parseInt(args[1]);
+        int port = 9000;
         try {
-            System.out.println("Connecting to " + serverName + " on port " + port);
-            Socket client = new Socket(serverName, port);
-
-            System.out.println("Just connected to " + client.getRemoteSocketAddress());
-            OutputStream outToServer = client.getOutputStream();
-            DataOutputStream out = new DataOutputStream(outToServer);
-
-            out.writeUTF("Hello from " + client.getLocalSocketAddress());
-            InputStream inFromServer = client.getInputStream();
-            DataInputStream in = new DataInputStream(inFromServer);
-
-            System.out.println("Server says " + in.readUTF());
-            client.close();
+            Thread t = new StartServer(port);
+            t.start();
         }catch(IOException e) {
             e.printStackTrace();
         }
