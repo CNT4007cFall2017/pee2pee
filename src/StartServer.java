@@ -5,7 +5,7 @@
 import java.net.*;
 import java.io.*;
 
-public class StartClient {
+public class StartServer {
 
     public static void main(String [] args) {
         String serverName = args[0];

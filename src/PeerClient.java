@@ -18,23 +18,24 @@ public class PeerClient {
     public void run() {
         try {
             //create a socket to connect to the server
-            socket = new Socket("localhost", 9000);
+            socket = new Socket("192.168.1.138", 9000);
             System.out.println("Connected to server");
 
             //init io streams
             input = new ObjectInputStream(socket.getInputStream());
             output = new ObjectOutputStream(socket.getOutputStream());
-
+            System.out.println("here");
             //get input from std input
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            //BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
             while(true) {
                 //read a sentence from the std in
-                msg_send = br.readLine();
+                //msg_send = br.readLine();
 
+                System.out.println("sending message");
                 //send something to the server
                 sendMessage("hello");
-
+                System.out.println("sent");
                 //get something from the server
                 msg_recv = (String)input.readObject();
                 System.out.println(msg_recv);
