@@ -38,11 +38,23 @@ public class PeerWorker implements Runnable {
         }
     }
 
+    private void send(String msg) {
+        try {
+            output.writeObject(msg);
+            output.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void run() {
         while(connected) {
             try {
                 String recv = (String)input.readObject();
+                System.out.println(recv);
+
+                send(recv);
             } catch (IOException e) {
                 e.printStackTrace();
                 shutdown();
