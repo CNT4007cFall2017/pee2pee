@@ -18,10 +18,10 @@ public class StartServer extends Thread {
                 Socket server = serverSocket.accept();
 
                 System.out.println("Just connected to " + server.getRemoteSocketAddress());
-                DataInputStream in = new DataInputStream(server.getInputStream());
+                ObjectInputStream in = new ObjectInputStream(server.getInputStream());
 
-                System.out.println(in.readUTF());
-                DataOutputStream out = new DataOutputStream(server.getOutputStream());
+                System.out.println((String)in.readObject());
+                ObjectOutputStream out = new ObjectOutputStream(server.getOutputStream());
                 out.writeUTF("Thank you for connecting to " + server.getLocalSocketAddress()
                         + "\nGoodbye!");
                 server.close();
@@ -30,6 +30,9 @@ public class StartServer extends Thread {
                 System.out.println("Socket timed out!");
                 break;
             }catch(IOException e) {
+                e.printStackTrace();
+                break;
+            }catch(ClassNotFoundException e) {
                 e.printStackTrace();
                 break;
             }

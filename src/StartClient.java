@@ -4,6 +4,7 @@
 // File Name GreetingClient.java
 import java.net.*;
 import java.io.*;
+import java.util.Scanner;
 
 public class StartClient {
 
@@ -16,15 +17,29 @@ public class StartClient {
 
             System.out.println("Just connected to " + client.getRemoteSocketAddress());
             OutputStream outToServer = client.getOutputStream();
-            DataOutputStream out = new DataOutputStream(outToServer);
+            ObjectOutputStream out = new ObjectOutputStream(outToServer);
 
-            out.writeUTF("Hello from " + client.getLocalSocketAddress());
             InputStream inFromServer = client.getInputStream();
-            DataInputStream in = new DataInputStream(inFromServer);
+            ObjectInputStream in = new ObjectInputStream(inFromServer);
 
-            System.out.println("Server says " + in.readUTF());
+            String msg;
+            Scanner sc = new Scanner(System.in);
+
+            while (true) {
+                msg = sc.next();
+
+                out.writeObject(msg);
+
+                if (msg.equals("q")) {
+                    break;
+                }
+
+                System.out.println("Server says " + (String)in.readObject());
+            }
             client.close();
         }catch(IOException e) {
+            e.printStackTrace();
+        }catch(ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
