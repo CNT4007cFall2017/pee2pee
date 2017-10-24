@@ -12,9 +12,25 @@ public class RemotePeerInfo {
 	public String peerAddress;
 	public String peerPort;
 	
-	public RemotePeerInfo(String pId, String pAddress, String pPort) {
+	public RemotePeerInfo(String pId, String pAddress, String pPort, boolean pFile) {
 		peerId = pId;
 		peerAddress = pAddress;
 		peerPort = pPort;
+		peerFile = pFile;
 	}
+
+	public int getPeerID(){
+		return Integer.parseInt(peerID);
+	}
+	public String getPeerAddress(){
+		return peerAddress;
+	}
+
+	public boolean ifFile(){
+		return peerFile;
+	}
+	public getPort(){
+		return Integer.parseInt(_peerPort);
+	}
+	
 }
