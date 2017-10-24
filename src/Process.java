@@ -13,6 +13,7 @@ import java.util.List;
 public class Process {
 
     private ServerSocket serverSoc;
+    private FileHandler fileHandler;
     private int port;
 
     public Process() throws IOException {
@@ -20,6 +21,8 @@ public class Process {
 
         try {
             serverSoc = new ServerSocket(port);
+            fileHandler = new FileHandler("config/PeerInfo.cfg");
+            fileHandler.gatherRemotePeers();
             System.out.println("Listening on port " + port);
             while(true) {
                 Socket clientSoc = serverSoc.accept();
