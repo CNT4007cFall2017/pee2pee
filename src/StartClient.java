@@ -37,7 +37,17 @@ public class StartClient {
                     break;
                 }
 
-                System.out.println("Server says " + (String)in.readObject());
+               try{
+
+               	System.out.println("Server says " + (String)in.readObject());
+               
+               }catch(IOException e){
+               	e.printStackTrace();
+               }catch(ClassNotFoundException e){
+               	e.printStackTrace();
+
+               }
+
             }
             out.close();
             in.close();
