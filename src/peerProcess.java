@@ -6,7 +6,7 @@ import java.io.IOException;
 public class peerProcess {
     public static void main(String[] args) {
         try {
-            Process process = new Process();
+            Process process = new Process(Integer.parseInt(args[0]));
         } catch (IOException e) {
             e.printStackTrace();
         }
