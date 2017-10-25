@@ -16,6 +16,8 @@ public class ConnectionWorker implements Runnable {
 
         try {
             clientSoc = new Socket(hostName, port);
+            output = new ObjectOutputStream(clientSoc.getOutputStream());
+            input = new ObjectInputStream(clientSoc.getInputStream());
             System.out.println("Connected to: " + hostName + " on " + port);
         } catch (IOException e) {
             e.printStackTrace();
