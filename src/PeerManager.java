@@ -9,6 +9,7 @@
 //import wherever RemotePeerInfo ends up.
 
 public class PeerManager implements Runnable{
+
 	private final List<Peer> allPeers = new ArrayList<>();
 	private final int numPrefNeighbors;
 	private final int unchokeInterval;
