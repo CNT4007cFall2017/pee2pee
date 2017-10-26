@@ -10,8 +10,7 @@ public class Message {
         this.type = type;
         this.payload = payload;
     }
-    public Message(int length, int type) { //0-3
-        this.length = length;
+    public Message(int type) { //0-3
         this.type = type;
     }
 }
