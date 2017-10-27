@@ -7,7 +7,7 @@ public class Handshake {
 
     public Handshake(byte[] peerID) {
         this.header = "P2PFILESHARINGPROJ";
-        this.zero = new byte[8];
+        this.zero = new byte[10];
         this.peerID = peerID;
     }
 
