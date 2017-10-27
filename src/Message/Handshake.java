@@ -10,4 +10,12 @@ public class Handshake {
         this.zero = new byte[8];
         this.peerID = peerID;
     }
+
+    public byte[] getPeerID() {
+        return peerID;
+    }
+
+    public void setPeerID(byte[] peerID) {
+        this.peerID = peerID;
+    }
 }
