@@ -3,6 +3,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by chase on 10/19/2017.
@@ -13,10 +16,18 @@ public class PeerWorker implements Runnable {
     private ObjectInputStream input;
     private ObjectOutputStream output;
     private boolean connected;
+    private Set<Integer> allowedPeerIds;
+    private Peer myPeer;
 
-    public PeerWorker(Socket clientSoc) {
+    public PeerWorker(Socket clientSoc, Collection<Peer> allowedPeerConnections, Peer p) {
         connection = clientSoc;
         connected = true;
+        myPeer = p;
+        allowedPeerIds = new HashSet<>();
+
+        for (Peer currP : allowedPeerConnections) {
+            allowedPeerIds.add(currP.getId());
+        }
 
         try {
             input = new ObjectInputStream(connection.getInputStream());
@@ -47,21 +58,47 @@ public class PeerWorker implements Runnable {
         }
     }
 
+    private void sendHandshake(int pid) {
+        try {
+            output.writeObject(pid);
+            output.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void run() {
         while(connected) {
-            try {
-                String recv = (String)input.readObject();
-                System.out.println(recv);
 
-                send(recv);
-            } catch (IOException e) {
-                e.printStackTrace();
-                shutdown();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-                shutdown();
+            //verify handshake
+            boolean valid = listenForHandshake();
+
+            if (valid) {
+                //respond with our own handshake
+                sendHandshake(myPeer.getId());
+            } else {
+                System.out.println("PW NOT VALID");
             }
+
         }
+    }
+
+    private boolean listenForHandshake() {
+        boolean valid = false;
+        try {
+            int pid = (Integer)input.readObject(); //2
+            valid =  validate(pid);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return valid;
+    }
+
+    private boolean validate(int pid) {
+        return allowedPeerIds.contains(pid);
     }
 }

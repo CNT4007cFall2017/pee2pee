@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.List;
 
 /**
  * Created by chase on 10/19/2017.
@@ -15,7 +14,7 @@ public class Process {
     private ServerSocket serverSoc;
     private FileHandler fileHandler;
     private int peerId;
-    private Peer self;
+    private Peer myPeer;
 
     public Process(int peerId) throws IOException {
         this.peerId = peerId;
@@ -24,19 +23,18 @@ public class Process {
             fileHandler = new FileHandler("config/PeerInfo.cfg");
             fileHandler.gatherRemotePeers();
             fileHandler.setPeerInputLimit();
-            self = fileHandler.findSelf(peerId);
-            serverSoc = new ServerSocket(self.getPort());
-            ConnectionHandler connectionHandler = new ConnectionHandler(fileHandler.getPeersToConnectTo());
-
-
+            myPeer = fileHandler.findSelf(peerId);
+            fileHandler.initPeerLists(myPeer.getId());
+            serverSoc = new ServerSocket(myPeer.getPort());
+            ConnectionHandler connectionHandler = new ConnectionHandler(fileHandler.getPeersToConnectTo(), myPeer);
 
             int inputCount = 0;  // track the number of peers connected to this peer
 
-            while(inputCount < self.getInputConnLimit()) {  // wait for connection from peers below
-                System.out.println("Listening on port " + self.getPort());
+            while(inputCount < myPeer.getInputConnLimit()) {  // wait for connection from peers below
+                System.out.println("Listening on port " + myPeer.getPort());
                 Socket clientSoc = serverSoc.accept();
                 System.out.println("Getting connection from " + clientSoc.getRemoteSocketAddress());
-                new Thread(new PeerWorker(clientSoc)).start();
+                new Thread(new PeerWorker(clientSoc, fileHandler.getAllowedPeerConnections(), myPeer)).start();
                 inputCount++;
             }
 

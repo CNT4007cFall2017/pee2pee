@@ -4,21 +4,20 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class ConnectionWorker implements Runnable {
-    private String hostName;
-    private int port;
+    private Peer connectedPeer;
+    private Peer myPeer;
     private ObjectOutputStream output;
     private ObjectInputStream input;
     private Socket clientSoc;
 
-    public ConnectionWorker(Peer p) {
-        hostName = p.getHostname();
-        port = p.getPort();
-
+    public ConnectionWorker(Peer p, Peer myself) {
+        connectedPeer = p;
+        myPeer = myself;
         try {
-            clientSoc = new Socket(hostName, port);
+            clientSoc = new Socket(p.getHostname(), p.getPort());
             output = new ObjectOutputStream(clientSoc.getOutputStream());
             input = new ObjectInputStream(clientSoc.getInputStream());
-            System.out.println("Connected to: " + hostName + " on " + port);
+            System.out.println("Connected to: " + p.getHostname() + " on " + p.getPort());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -26,6 +25,42 @@ public class ConnectionWorker implements Runnable {
 
     @Override
     public void run() {
+        // this will send handshake message
+        sendHandShake(myPeer.getId());
+        boolean validated = listenForHandshake();
 
+        if (validated) {
+            System.out.println("Validated: " + connectedPeer.getId());
+        } else {
+            System.out.println("NOT AUTHORIZED");
+        }
+    }
+
+    private void sendHandShake(int pid) {
+        try {
+            output.writeObject(pid);  //send the handshake
+            output.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean listenForHandshake() {
+        boolean valid = false;
+
+        try {
+            int id = (Integer)input.readObject();
+            valid = validate(id);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return valid;
+    }
+
+    private boolean validate(int id) {
+        return id == connectedPeer.getId();
     }
 }

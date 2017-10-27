@@ -5,12 +5,14 @@ import java.util.Collection;
 public class FileHandler {
     private final Collection<Peer> remotePeers;
     private final Collection<Peer> peersToConnectTo;
+    private final Collection<Peer> allowedPeerConnections;
     private final String configFileName;
 
     public int peerCount;  // total number of peers
 
     public FileHandler(String configFileName) {
         remotePeers = new ArrayList<>();
+        allowedPeerConnections = new ArrayList<>();
         peersToConnectTo = new ArrayList<>();
         this.configFileName = configFileName;
         peerCount = 0;
@@ -41,13 +43,26 @@ public class FileHandler {
     public Peer findSelf(int peerId) {
         for(Peer p : remotePeers) {
             if (p.getId() == peerId) {
-                remotePeers.remove(p);
                 return p;
-            } else {
-                peersToConnectTo.add(p);
             }
         }
         return null;
+    }
+
+    public void initPeerLists(int myPID) {
+        boolean listFlag = false;
+        for(Peer p : remotePeers) {
+            if (p.getId() == myPID) {
+                listFlag = true;
+                continue;
+            }
+
+            if (!listFlag) {
+                peersToConnectTo.add(p);
+            } else {
+                allowedPeerConnections.add(p);
+            }
+        }
     }
 
     public void setPeerInputLimit() {
@@ -58,5 +73,13 @@ public class FileHandler {
 
     public Collection<Peer> getPeersToConnectTo() {
         return peersToConnectTo;
+    }
+
+    public Collection<Peer> getAllowedPeerConnections() {
+        return allowedPeerConnections;
+    }
+
+    public Collection<Peer> getRemotePeers() {
+        return remotePeers;
     }
 }
