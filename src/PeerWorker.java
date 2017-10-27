@@ -81,7 +81,9 @@ public class PeerWorker implements Runnable {
                 System.out.println("PW NOT VALID");
             }
 
+            shutdown();
         }
+
     }
 
     private boolean listenForHandshake() {

@@ -34,12 +34,25 @@ public class ConnectionWorker implements Runnable {
         } else {
             System.out.println("NOT AUTHORIZED");
         }
+
+        shutdown();
     }
 
     private void sendHandShake(int pid) {
         try {
             output.writeObject(pid);  //send the handshake
             output.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void shutdown() {
+        System.out.println("shutting down...");
+        try {
+            clientSoc.close();
+            output.close();
+            input.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
