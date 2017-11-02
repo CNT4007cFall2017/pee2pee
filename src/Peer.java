@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  * Created by chase on 10/19/2017.
  *
@@ -10,6 +12,7 @@ public class Peer {
     private final boolean hasFile;
     private final int index;
     private int inputConnLimit;
+    private byte[] bitfield;
 
     public Peer(int id, String hostname, int port, boolean hasFile, int index) {
         this.id = id;
@@ -18,6 +21,11 @@ public class Peer {
         this.hasFile = hasFile;
         this.index = index;
         inputConnLimit = 0;
+        bitfield = new byte[16];
+
+        if (hasFile) {
+           Arrays.fill(bitfield, (byte)1);
+        }
     }
 
     public int getId() {

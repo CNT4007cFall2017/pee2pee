@@ -82,4 +82,5 @@ public class FileHandler {
     public Collection<Peer> getRemotePeers() {
         return remotePeers;
     }
+
 }
