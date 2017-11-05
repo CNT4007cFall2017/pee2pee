@@ -48,6 +48,10 @@ public class Peer {
         return inputConnLimit;
     }
 
+    public byte[] getBitfield() {
+        return bitfield;
+    }
+
     public void setInputConnLimit(int limit) {
         inputConnLimit = limit;
     }

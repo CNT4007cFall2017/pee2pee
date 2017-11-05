@@ -9,10 +9,12 @@ public class ConnectionWorker implements Runnable {
     private ObjectOutputStream output;
     private ObjectInputStream input;
     private Socket clientSoc;
+    private boolean connected;
 
     public ConnectionWorker(Peer p, Peer myself) {
         connectedPeer = p;
         myPeer = myself;
+        connected = true;
         try {
             clientSoc = new Socket(p.getHostname(), p.getPort());
             output = new ObjectOutputStream(clientSoc.getOutputStream());
@@ -33,9 +35,18 @@ public class ConnectionWorker implements Runnable {
             System.out.println("Validated: " + connectedPeer.getId());
         } else {
             System.out.println("NOT AUTHORIZED");
+            shutdown();
         }
 
-        shutdown();
+        try {
+            Logger.Logger.debug("Established handshake");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        while (connected) {
+
+        }
     }
 
     private void sendHandShake(int pid) {
@@ -49,6 +60,7 @@ public class ConnectionWorker implements Runnable {
 
     private void shutdown() {
         System.out.println("shutting down...");
+        connected = false;
         try {
             clientSoc.close();
             output.close();

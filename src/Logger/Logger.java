@@ -73,12 +73,18 @@ public class Logger {
         log(message);
     }
 
+    public static void debug(String msg) throws IOException {
+        String message = String.format("%s: %s", LocalDateTime.now(), msg);
+        log(message);
+    }
+
     private static void log(String msg) throws IOException {
         try {
             bw = new BufferedWriter(new FileWriter(logFile, true));
             bw.write(msg);
             bw.newLine();
             bw.flush();
+            System.out.println(msg);
         } finally {
             if (bw != null) {
                 bw.close();

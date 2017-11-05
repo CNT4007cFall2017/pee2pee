@@ -18,6 +18,7 @@ public class PeerWorker implements Runnable {
     private boolean connected;
     private Set<Integer> allowedPeerIds;
     private Peer myPeer;
+    private int connectedPeerId;
 
     public PeerWorker(Socket clientSoc, Collection<Peer> allowedPeerConnections, Peer p) {
         connection = clientSoc;
@@ -49,7 +50,7 @@ public class PeerWorker implements Runnable {
         }
     }
 
-    private void send(String msg) {
+    private void send(Object msg) {
         try {
             output.writeObject(msg);
             output.flush();
@@ -69,19 +70,23 @@ public class PeerWorker implements Runnable {
 
     @Override
     public void run() {
+
+        //verify handshake
+        boolean valid = listenForHandshake();
+
+        if (valid) {
+            //respond with our own handshake
+            System.out.println("Validated: " + connectedPeerId);
+            sendHandshake(myPeer.getId());
+        } else {
+            System.out.println("PW NOT VALID");
+            shutdown();
+        }
+
+        send(myPeer.getBitfield());
+
         while(connected) {
 
-            //verify handshake
-            boolean valid = listenForHandshake();
-
-            if (valid) {
-                //respond with our own handshake
-                sendHandshake(myPeer.getId());
-            } else {
-                System.out.println("PW NOT VALID");
-            }
-
-            shutdown();
         }
 
     }
@@ -89,7 +94,7 @@ public class PeerWorker implements Runnable {
     private boolean listenForHandshake() {
         boolean valid = false;
         try {
-            int pid = (Integer)input.readObject(); //2
+            int pid = (Integer)input.readObject();
             valid =  validate(pid);
         } catch (IOException e) {
             e.printStackTrace();
@@ -101,6 +106,9 @@ public class PeerWorker implements Runnable {
     }
 
     private boolean validate(int pid) {
+        if (allowedPeerIds.contains(pid)) {
+            connectedPeerId = pid;
+        }
         return allowedPeerIds.contains(pid);
     }
 }
