@@ -13,4 +13,8 @@ public class Message {
     public Message(int type) { //0-3
         this.type = type;
     }
+
+    public int getType() {
+        return type;
+    }
 }
