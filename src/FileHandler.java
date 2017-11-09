@@ -1,18 +1,21 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class FileHandler {
     private final Collection<Peer> remotePeers;
     private final Collection<Peer> peersToConnectTo;
-    private final Collection<Peer> allowedPeerConnections;
+    //private final Collection<Peer> allowedPeerConnections;
+    private final Set<Integer> allowedPeerConnections;
     private final String configFileName;
 
     public int peerCount;  // total number of peers
 
     public FileHandler(String configFileName) {
         remotePeers = new ArrayList<>();
-        allowedPeerConnections = new ArrayList<>();
+        allowedPeerConnections = new HashSet<>();
         peersToConnectTo = new ArrayList<>();
         this.configFileName = configFileName;
         peerCount = 0;
@@ -60,7 +63,7 @@ public class FileHandler {
             if (!listFlag) {
                 peersToConnectTo.add(p);
             } else {
-                allowedPeerConnections.add(p);
+                allowedPeerConnections.add(p.getId());
             }
         }
     }
@@ -75,7 +78,7 @@ public class FileHandler {
         return peersToConnectTo;
     }
 
-    public Collection<Peer> getAllowedPeerConnections() {
+    public Set<Integer> getAllowedPeerConnections() {
         return allowedPeerConnections;
     }
 

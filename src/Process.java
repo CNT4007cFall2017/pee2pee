@@ -19,32 +19,12 @@ public class Process {
     public Process(int peerId) throws IOException {
         this.peerId = peerId;
 
-        try {
-            fileHandler = new FileHandler("config/PeerInfo.cfg");
-            fileHandler.gatherRemotePeers();
-            fileHandler.setPeerInputLimit();
-            myPeer = fileHandler.findSelf(peerId);
-            fileHandler.initPeerLists(myPeer.getId());
-            serverSoc = new ServerSocket(myPeer.getPort());
-            ConnectionHandler connectionHandler = new ConnectionHandler(fileHandler.getPeersToConnectTo(), myPeer);
-
-            int inputCount = 0;  // track the number of peers connected to this peer
-
-            while(inputCount < myPeer.getInputConnLimit()) {  // wait for connection from peers below
-                System.out.println("Listening on port " + myPeer.getPort());
-                Socket clientSoc = serverSoc.accept();
-                System.out.println("Getting connection from " + clientSoc.getRemoteSocketAddress());
-                new Thread(new PeerWorker(clientSoc, fileHandler.getAllowedPeerConnections(), myPeer)).start();
-                inputCount++;
-            }
-
-            connectionHandler.connectToPeers();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            serverSoc.close();
-        }
+        fileHandler = new FileHandler("config/PeerInfo.cfg");
+        fileHandler.gatherRemotePeers();
+        fileHandler.setPeerInputLimit();
+        myPeer = fileHandler.findSelf(peerId);
+        fileHandler.initPeerLists(myPeer.getId());
+        ConnectionHandler connectionHandler = new ConnectionHandler(fileHandler.getPeersToConnectTo(), myPeer, fileHandler.getAllowedPeerConnections());
 
     }
 }
