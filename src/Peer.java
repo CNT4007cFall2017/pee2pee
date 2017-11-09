@@ -1,7 +1,4 @@
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by chase on 10/19/2017.
@@ -15,9 +12,9 @@ public class Peer {
     private final boolean hasFile;
     private final int index;
     private int inputConnLimit;
-    private byte[] bitfield;
+    private BitSet bitfield;
 
-    public Map<Integer, byte[]> remoteBitfields;
+    public Map<Integer, BitSet> remoteBitfields;
 
     public Peer(int id, String hostname, int port, boolean hasFile, int index) {
         this.id = id;
@@ -26,13 +23,11 @@ public class Peer {
         this.hasFile = hasFile;
         this.index = index;
         inputConnLimit = 0;
-        bitfield = new byte[16];
+        bitfield = new BitSet(16);
         remoteBitfields = new HashMap<>();
 
         if (hasFile) {
-           Arrays.fill(bitfield, (byte)1);
-        } else {
-            Arrays.fill(bitfield, (byte)0);
+            bitfield.set(0, bitfield.size()-1);
         }
     }
 
@@ -56,7 +51,7 @@ public class Peer {
         return inputConnLimit;
     }
 
-    public byte[] getBitfield() {
+    public BitSet getBitfield() {
         return bitfield;
     }
 
@@ -73,7 +68,7 @@ public class Peer {
 
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
-            System.out.println(pair.getKey() + " : " + pair.getValue());
+            System.out.println(pair.getKey() + " : " + Helper.Helper.bitSetToString((BitSet)pair.getValue()));
             it.remove();
         }
     }

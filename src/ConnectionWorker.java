@@ -1,3 +1,4 @@
+import Helper.Helper;
 import Logger.Logger;
 import Message.Type;
 
@@ -22,14 +23,11 @@ public class ConnectionWorker implements Runnable {
     public void run() {
         doHandshake();
         doBitfield();
-        myPeer.printBitfields();
+        //messageHandler.teardown();
     }
 
     private void doHandshake() {
-        if (doHandshake) {
-            // tell message handler to send handshake message
-            messageHandler.send(new Handshake(myPeer.getId()));
-        }
+        messageHandler.send(new Handshake(myPeer.getId()));
         try {
             messageHandler.recv();
         } catch (IOException e) {
@@ -39,14 +37,15 @@ public class ConnectionWorker implements Runnable {
 
     private void doBitfield() {
         if (myPeer.hasFile()) {
-            messageHandler.send(new Bitfield(myPeer.getBitfield()));
-        }
-        try {
-            messageHandler.recv();
-        } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("sending bitfield");
+            messageHandler.send(new Bitfield(myPeer.getBitfield().toByteArray()));
+        } else {
+            try {
+                messageHandler.recv();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
-
 
 }

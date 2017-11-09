@@ -1,8 +1,5 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class FileHandler {
     private final Collection<Peer> remotePeers;
@@ -61,9 +58,9 @@ public class FileHandler {
 
             if (!listFlag) {
                 peersToConnectTo.add(p);
-                myPeer.remoteBitfields.put(p.getId(), new byte[16]);
             }
             allowedPeerConnections.add(p.getId());
+            myPeer.remoteBitfields.put(p.getId(), new BitSet(16));
         }
     }
 

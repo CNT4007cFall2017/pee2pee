@@ -25,6 +25,5 @@ public class Process {
         myPeer = fileHandler.findSelf(peerId);
         fileHandler.initPeerLists(myPeer);
         ConnectionHandler connectionHandler = new ConnectionHandler(fileHandler.getPeersToConnectTo(), myPeer, fileHandler.getAllowedPeerConnections());
-
     }
 }
