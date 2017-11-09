@@ -51,16 +51,17 @@ public class FileHandler {
         return null;
     }
 
-    public void initPeerLists(int myPID) {
+    public void initPeerLists(Peer myPeer) {
         boolean listFlag = false;
         for(Peer p : remotePeers) {
-            if (p.getId() == myPID) {
+            if (p.getId() == myPeer.getId()) {
                 listFlag = true;
                 continue;
             }
 
             if (!listFlag) {
                 peersToConnectTo.add(p);
+                myPeer.remoteBitfields.put(p.getId(), new byte[16]);
             }
             allowedPeerConnections.add(p.getId());
         }

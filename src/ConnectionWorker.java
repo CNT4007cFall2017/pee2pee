@@ -21,12 +21,25 @@ public class ConnectionWorker implements Runnable {
     @Override
     public void run() {
         doHandshake();
+        doBitfield();
+        myPeer.printBitfields();
     }
 
     private void doHandshake() {
         if (doHandshake) {
             // tell message handler to send handshake message
             messageHandler.send(new Handshake(myPeer.getId()));
+        }
+        try {
+            messageHandler.recv();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void doBitfield() {
+        if (myPeer.hasFile()) {
+            messageHandler.send(new Bitfield(myPeer.getBitfield()));
         }
         try {
             messageHandler.recv();

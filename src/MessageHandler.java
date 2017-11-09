@@ -40,7 +40,7 @@ public class MessageHandler {
 
 
     public void recv() throws IOException {
-        Message recMessage = null;
+        Message recMessage;
         try {
             recMessage = (Message)input.readObject();
             handle(recMessage);
@@ -53,7 +53,6 @@ public class MessageHandler {
         switch (message.getType()) {
             case Type.HANDSHAKE:
                 int id = ((Handshake) message).getIdField();
-                System.out.println("got handshake message from " + id);
 
                 if (validateHandshake(id)) {
                     remotePeerId = id;
@@ -64,6 +63,14 @@ public class MessageHandler {
                         e.printStackTrace();
                     }
                 }
+
+            case Type.BITFIELD:
+              // store remote bitfield
+              byte[] bitfield = message.getPayload();
+              myPeer.remoteBitfields.put(remotePeerId, bitfield);
+              if (myPeer.hasFile()) {
+                  send(new Bitfield(myPeer.getBitfield()));
+              }
         }
     }
 
