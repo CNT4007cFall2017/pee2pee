@@ -1,3 +1,4 @@
+import Logger.Logger;
 import Message.*;
 
 import java.io.IOException;
@@ -11,10 +12,13 @@ public class MessageHandler {
     private ObjectOutputStream output;
     private ObjectInputStream input;
     private Set<Integer> validPeerIds;
+    private Peer myPeer;
+    private int remotePeerId;
 
-    public MessageHandler(Socket _socket, Set<Integer> _validPeerIds){
+    public MessageHandler(Socket _socket, Set<Integer> _validPeerIds, Peer _myPeer){
         connSock = _socket;
         validPeerIds = _validPeerIds;
+        myPeer = _myPeer;
 
         try {
             output = new ObjectOutputStream(connSock.getOutputStream());
@@ -35,26 +39,31 @@ public class MessageHandler {
     }
 
 
-    public Object recv() throws IOException {
+    public void recv() throws IOException {
         Message recMessage = null;
         try {
             recMessage = (Message)input.readObject();
-            return handle(recMessage);
+            handle(recMessage);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-
-        return null;
     }
 
-    private Object handle(Message message) {
+    private void handle(Message message) {
         switch (message.getType()) {
             case Type.HANDSHAKE:
                 int id = ((Handshake) message).getIdField();
                 System.out.println("got handshake message from " + id);
-                return validateHandshake(id);
-            default:
-                return null;
+
+                if (validateHandshake(id)) {
+                    remotePeerId = id;
+                    try {
+                        Logger.logTCPConnection(remotePeerId, myPeer.getId());
+                        send(new Handshake(myPeer.getId()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
         }
     }
 

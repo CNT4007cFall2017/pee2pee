@@ -7,7 +7,6 @@ import java.util.Set;
 public class FileHandler {
     private final Collection<Peer> remotePeers;
     private final Collection<Peer> peersToConnectTo;
-    //private final Collection<Peer> allowedPeerConnections;
     private final Set<Integer> allowedPeerConnections;
     private final String configFileName;
 
@@ -62,9 +61,8 @@ public class FileHandler {
 
             if (!listFlag) {
                 peersToConnectTo.add(p);
-            } else {
-                allowedPeerConnections.add(p.getId());
             }
+            allowedPeerConnections.add(p.getId());
         }
     }
 

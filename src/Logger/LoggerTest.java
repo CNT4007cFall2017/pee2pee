@@ -15,7 +15,7 @@ public class LoggerTest
         testList.add("there");
 
         Logger.makeLogFile("test.txt");
-        Logger.logTCPConnection("123", "456");
+        Logger.logTCPConnection(123, 123);
         Logger.logPrefNeighborsChange("123", testList);
         Logger.logOptUnchNeighborChange("123", "456");
         Logger.logUnchoke("123", "456");

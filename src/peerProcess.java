@@ -8,8 +8,9 @@ import java.io.IOException;
 public class peerProcess {
     public static void main(String[] args) {
         try {
-            Logger.makeLogFile("log.txt");
-            Process process = new Process(Integer.parseInt(args[0]));
+            int myPeerId = Integer.parseInt(args[0]);
+            Logger.makeLogFile(String.format("log%d.txt", myPeerId));
+            Process process = new Process(myPeerId);
         } catch (IOException e) {
             e.printStackTrace();
         }

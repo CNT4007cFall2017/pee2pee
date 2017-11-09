@@ -22,8 +22,8 @@ public class Logger {
         clearLogFile();
     }
 
-    public static void logTCPConnection(String pid1, String pid2) throws IOException {
-        String message = String.format("%s: Peer %s makes a connection to Peer %s", LocalDateTime.now(), pid1, pid2);
+    public static void logTCPConnection(int pid1, int pid2) throws IOException {
+        String message = String.format("%s: Peer %d makes a connection to Peer %d", LocalDateTime.now(), pid1, pid2);
         log(message);
     }
 
