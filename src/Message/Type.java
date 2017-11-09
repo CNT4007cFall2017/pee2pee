@@ -10,5 +10,6 @@ public class Type {
     public static final int BITFIELD = 5;
     public static final int REQUEST = 6;
     public static final int PIECE = 7;
+    public static final int HANDSHAKE = 8;
 
 }

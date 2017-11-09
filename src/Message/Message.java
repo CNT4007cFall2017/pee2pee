@@ -17,4 +17,8 @@ public class Message {
     public int getType() {
         return type;
     }
+
+    public byte[] getPayload() {
+        return payload;
+    }
 }

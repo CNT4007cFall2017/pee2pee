@@ -1,21 +1,9 @@
 package Message;
 
-public class Handshake {
-    private String header;
-    private byte[] zero;
-    private byte[] peerID;
+public class Handshake extends Message {
+    private final String header = "P2PFILESHARINGPROJ0000000000";
 
-    public Handshake(byte[] peerID) {
-        this.header = "P2PFILESHARINGPROJ";
-        this.zero = new byte[10];
-        this.peerID = peerID;
-    }
-
-    public byte[] getPeerID() {
-        return peerID;
-    }
-
-    public void setPeerID(byte[] peerID) {
-        this.peerID = peerID;
+    public Handshake(int peerID) {
+        super(30, Type.HANDSHAKE, ("P2PFILESHARINGPROJ0000000000" + peerID).getBytes());
     }
 }
