@@ -1,5 +1,6 @@
 import Message.Type;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.Set;
 
@@ -15,7 +16,7 @@ public class ConnectionWorker implements Runnable {
         this.myPeer = myPeer;
         this.doHandshake = doHandshake;
         this.validPeerIds = validPeerIds;
-        messageHandler = new MessageHandler(connSock);
+        messageHandler = new MessageHandler(connSock, validPeerIds);
     }
 
     @Override
@@ -23,10 +24,29 @@ public class ConnectionWorker implements Runnable {
         if (doHandshake) {
             // tell message handler to send handshake message
             System.out.println("sending handshake");
-            messageHandler.send(new Message(Type.HANDSHAKE));
+            messageHandler.send(new Handshake(myPeer.getId()));
+            try {
+                boolean res = (boolean)messageHandler.recv();
+
+                if (res) {
+                    // log successful handshake
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else {
             // wait for handshake message and validate it
             System.out.println("listening for handshake");
+            try {
+                boolean res = (boolean)messageHandler.recv();
+
+                if (res) {
+                    messageHandler.send(new Handshake(myPeer.getId()));
+                    // log successful handhshake
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
 

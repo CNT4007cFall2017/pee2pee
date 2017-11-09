@@ -29,7 +29,7 @@ public class ConnectionHandler {
         for(Peer p : peersToConnectTo) {
             try {
                 Socket connectionSock = new Socket(p.getHostname(), p.getPort());
-                new Thread(new ConnectionWorker(this.validPeerIds, p, connectionSock,true)).start();
+                new Thread(new ConnectionWorker(this.validPeerIds, myPeer, connectionSock,true)).start();
             } catch (IOException e) {
                 e.printStackTrace();
             }

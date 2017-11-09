@@ -4,14 +4,17 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Set;
 
 public class MessageHandler {
     private Socket connSock;
     private ObjectOutputStream output;
     private ObjectInputStream input;
+    private Set<Integer> validPeerIds;
 
-    public MessageHandler(Socket _socket){
+    public MessageHandler(Socket _socket, Set<Integer> _validPeerIds){
         connSock = _socket;
+        validPeerIds = _validPeerIds;
 
         try {
             output = new ObjectOutputStream(connSock.getOutputStream());
@@ -21,15 +24,7 @@ public class MessageHandler {
         }
     }
 
-    public Message handle(Message message) {
-        if (message.getType() == 5) {
-            return message;
-        } else {
-            return null; //Not sure what to actually return
-        }
-    }
-
-    public void send(Object message) {
+    public void send(Message message) {
         try {
             output.writeObject(message);
             output.flush();
@@ -40,21 +35,30 @@ public class MessageHandler {
     }
 
 
-    public Message recv() throws IOException {
-        //clientSoc = new Socket(p.getHostname(), p.getPort());
+    public Object recv() throws IOException {
         Message recMessage = null;
         try {
             recMessage = (Message)input.readObject();
-
-            switch (recMessage.getType()) {
-                case Type.HANDSHAKE:
-                    System.out.println("got handshake message from " + recMessage.getPayload());
-            }
-
+            return handle(recMessage);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return handle(recMessage);
 
+        return null;
+    }
+
+    private Object handle(Message message) {
+        switch (message.getType()) {
+            case Type.HANDSHAKE:
+                int id = ((Handshake) message).getIdField();
+                System.out.println("got handshake message from " + id);
+                return validateHandshake(id);
+            default:
+                return null;
+        }
+    }
+
+    private boolean validateHandshake(int peerId) {
+        return validPeerIds.contains(peerId);
     }
 }

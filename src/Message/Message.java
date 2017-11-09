@@ -1,6 +1,8 @@
 package Message;
 
-public class Message {
+import java.io.Serializable;
+
+public class Message implements Serializable {
     private int length;
     private int type; //0-7
     private byte[] payload;
@@ -20,5 +22,9 @@ public class Message {
 
     public byte[] getPayload() {
         return payload;
+    }
+
+    public int getPayloadLength() {
+        return payload.length;
     }
 }
