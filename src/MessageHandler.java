@@ -1,6 +1,5 @@
 import Logger.Logger;
 import Message.*;
-import com.sun.imageio.plugins.common.BitFile;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -63,6 +62,7 @@ public class MessageHandler {
     }
 
     private void handle(Message message) {
+        Peer temp;
         switch (message.getType()) {
             case Type.HANDSHAKE:
                 int id = ((Handshake) message).getIdField();
@@ -78,18 +78,48 @@ public class MessageHandler {
                 break;
 
             case Type.BITFIELD:
-              // store remote bitfield
-              BitSet bitfield = ((Bitfield) message).getBitSet();
-              myPeer.remoteBitfields.put(remotePeerId, bitfield);
-              if (myPeer.hasFile()) {
-                  send(new Bitfield(myPeer.getBitfield().toByteArray()));
-              }
-              myPeer.printBitfields();
-              break;
+                // store remote bitfield
+                BitSet bitfield = ((Bitfield) message).getBitSet();
+                myPeer.remoteBitfields.put(remotePeerId, bitfield);
+                if (myPeer.hasFile()) {
+                    send(new Bitfield(myPeer.getBitfield().toByteArray()));
+                }
+                amIInterested(bitfield);
+                break;
+
+            case Type.INTERESTED:
+                temp = searchPeers(remotePeerId);
+                myPeer.interestedPeers.add(temp);
+                myPeer.notInterestedPeers.remove(temp);
+                break;
+
+            case Type.NOTINTERESTED:
+                temp = searchPeers(remotePeerId);
+                myPeer.notInterestedPeers.add(temp);
+                myPeer.interestedPeers.remove(temp);
+                break;
 
             default:
                 teardown();
         }
+    }
+    private void amIInterested(BitSet bitField) {
+        BitSet temp = (BitSet) myPeer.getBitfield().clone();
+
+        temp.or(bitField);
+        if(temp.cardinality() > myPeer.getBitfield().cardinality()){
+            send(new Interested());
+        }
+
+    }
+    private Peer searchPeers(int peerID){
+        for (Peer p : myPeer.remotePeers){
+            if(p.getId() == peerID){
+                return p;
+            }
+        }
+        return null;
+
     }
 
     private boolean validateHandshake(int peerId) {

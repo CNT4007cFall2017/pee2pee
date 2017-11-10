@@ -13,6 +13,9 @@ public class Peer {
     private final int index;
     private int inputConnLimit;
     private BitSet bitfield;
+    public Collection<Peer> remotePeers;
+    public Set<Peer> interestedPeers;
+    public Set<Peer> notInterestedPeers;
 
     public Map<Integer, BitSet> remoteBitfields;
 
@@ -25,6 +28,9 @@ public class Peer {
         inputConnLimit = 0;
         bitfield = new BitSet(16);
         remoteBitfields = new HashMap<>();
+        interestedPeers = new HashSet<>();
+        notInterestedPeers = new HashSet<>();
+
 
         if (hasFile) {
             bitfield.set(0, bitfield.size()-1);
@@ -59,8 +65,21 @@ public class Peer {
         inputConnLimit = limit;
     }
 
+    public void setRemotePeers(Collection<Peer> _remotePeers){
+        remotePeers = _remotePeers;
+    }
+
     public boolean hasFile() {
         return hasFile;
+    }
+
+    public void printStatus(){
+        for(Peer p : interestedPeers){
+            System.out.println(p.getId());
+        }
+        for(Peer p : notInterestedPeers){
+            System.out.println(p.getId());
+        }
     }
 
     public void printBitfields() {

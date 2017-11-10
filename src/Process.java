@@ -24,6 +24,7 @@ public class Process {
         fileHandler.setPeerInputLimit();
         myPeer = fileHandler.findSelf(peerId);
         fileHandler.initPeerLists(myPeer);
+        myPeer.setRemotePeers(fileHandler.getRemotePeers());
         ConnectionHandler connectionHandler = new ConnectionHandler(fileHandler.getPeersToConnectTo(), myPeer, fileHandler.getAllowedPeerConnections());
     }
 }

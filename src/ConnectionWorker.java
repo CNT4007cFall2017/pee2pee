@@ -21,6 +21,7 @@ public class ConnectionWorker implements Runnable {
     public void run() {
         doHandshake();
         doBitfield();
+        //myPeer.printStatus();
         //messageHandler.teardown();
     }
 
@@ -36,6 +37,11 @@ public class ConnectionWorker implements Runnable {
     private void doBitfield() {
         if (myPeer.hasFile()) {
             messageHandler.send(new Bitfield(myPeer.getBitfield().toByteArray()));
+            try {
+                messageHandler.recv();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else {
             try {
                 messageHandler.recv();
