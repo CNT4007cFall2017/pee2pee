@@ -11,11 +11,9 @@ import Message.*;
 public class ConnectionWorker implements Runnable {
     private Peer myPeer;
     private MessageHandler messageHandler;
-    private boolean doHandshake;
 
-    public ConnectionWorker(Set<Integer> validPeerIds, Peer myPeer, Socket connSock, boolean doHandshake) {
+    public ConnectionWorker(Set<Integer> validPeerIds, Peer myPeer, Socket connSock) {
         this.myPeer = myPeer;
-        this.doHandshake = doHandshake;
         messageHandler = new MessageHandler(connSock, validPeerIds, myPeer);
     }
 
@@ -37,7 +35,6 @@ public class ConnectionWorker implements Runnable {
 
     private void doBitfield() {
         if (myPeer.hasFile()) {
-            System.out.println("sending bitfield");
             messageHandler.send(new Bitfield(myPeer.getBitfield().toByteArray()));
         } else {
             try {
