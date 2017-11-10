@@ -91,12 +91,22 @@ public class MessageHandler {
                 temp = searchPeers(remotePeerId);
                 myPeer.interestedPeers.add(temp);
                 myPeer.notInterestedPeers.remove(temp);
+                try {
+                    Logger.logInterestedMsg(myPeer.getId(), remotePeerId);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case Type.NOTINTERESTED:
                 temp = searchPeers(remotePeerId);
                 myPeer.notInterestedPeers.add(temp);
                 myPeer.interestedPeers.remove(temp);
+                try {
+                    Logger.logNotInterestedMsg(myPeer.getId(), remotePeerId);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             default:

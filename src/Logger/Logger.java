@@ -53,18 +53,18 @@ public class Logger {
         log(message);
     }
 
-    public static void logInterestedMsg(String pid1, String pid2) throws IOException {
-        String message = String.format("%s: Peer %s received the 'interested' message from %s", LocalDateTime.now(), pid1, pid2);
+    public static void logInterestedMsg(int pid1, int pid2) throws IOException {
+        String message = String.format("%s: Peer %d received the 'interested' message from %d", LocalDateTime.now(), pid1, pid2);
         log(message);
     }
 
-    public static void logNotInterestedMsg(String pid1, String pid2) throws IOException {
-        String message = String.format("%s: Peer %s received the 'not interested' message from %s", LocalDateTime.now(), pid1, pid2);
+    public static void logNotInterestedMsg(int pid1, int pid2) throws IOException {
+        String message = String.format("%s: Peer %d received the 'not interested' message from %d", LocalDateTime.now(), pid1, pid2);
         log(message);
     }
 
-    public static void logDownloading(String pid1, String pid2, int index, int numPieces) throws IOException {
-        String message = String.format("%s: Peer %s has downloaded the piece %d from %s.\r\nNow the number of pieces it has is %d", LocalDateTime.now(), pid1, index, pid2, numPieces);
+    public static void logDownloading(int pid1, int pid2, int index, int numPieces) throws IOException {
+        String message = String.format("%s: Peer %d has downloaded the piece %d from %d.\r\nNow the number of pieces it has is %d", LocalDateTime.now(), pid1, index, pid2, numPieces);
         log(message);
     }
 
