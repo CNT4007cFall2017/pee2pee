@@ -26,7 +26,7 @@ public class ServerProcess implements Runnable {
         while(true) {
             try {
                 Socket newConnection = serverSocket.accept();
-                // TODO: spawn new thread with this socket object
+                new Thread(new ConnectionWorker(newConnection, peerInfo));
             } catch (IOException e) {
                 e.printStackTrace();
             }

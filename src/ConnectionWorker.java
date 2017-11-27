@@ -4,6 +4,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import Message.*;
 import java.util.Set;
+import Logger.*;
 
 public class ConnectionWorker implements Runnable {
 
@@ -30,12 +31,18 @@ public class ConnectionWorker implements Runnable {
     @Override
     public void run() {
         //handshake
-        output.writeObject(new Handshake);
         try {
-            Handshake incomingHandshake = (Handshake)input.readObject();
-            remoteId = incomingHandshake.getIdField();
+//            output.writeObject(new Handshake(peerInfo.peerId));  // send the handshake to remote peer
+//            output.flush();
+//            Handshake incomingHandshake = (Handshake)input.readObject();  //wait for remote to
+            output.writeUTF("hello");
+            output.flush();
+            String msg = input.readUTF();
+            System.out.println("got handshake message");
+//            remoteId = incomingHandshake.getIdField();
             if(peerInfo.validPeerIds.contains(remoteId)){
                 receivedHandshake = true;
+                System.out.println("connected");;
             }
             //TODO: close connection and log rejection if the handshake fails.
             if(receivedHandshake){
@@ -46,9 +53,10 @@ public class ConnectionWorker implements Runnable {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
 
         //while true
             //listen for message
