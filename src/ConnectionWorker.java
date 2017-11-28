@@ -2,6 +2,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+
+import Logger.Logger;
 import Message.*;
 
 public class ConnectionWorker implements Runnable {
@@ -36,7 +38,7 @@ public class ConnectionWorker implements Runnable {
             remoteId = incomingHandshake.getIdField();
             if(peerInfo.validPeerIds.contains(remoteId)){
                 receivedHandshake = true;
-                System.out.println("connected");
+                Logger.logTCPConnection(peerInfo.peerId, remoteId);
             }
             //TODO: close connection and log rejection if the handshake fails.
             //TODO: send bitfield if peer has something ot send, not if has file
