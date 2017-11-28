@@ -38,6 +38,11 @@ public class FileHandler {
                     myPeer.hostname = hostname;
                     myPeer.port = port;
                     myPeer.hasFile = hasFile;
+
+                    if (hasFile) {
+                        myPeer.setAllBits();
+                    }
+
                     new Thread(new ServerProcess(myPeer)).start();
                 } else if (!foundSelf) { // looking at peer above self in the list
                     PeerInfo currPeer = new PeerInfo(currId, hostname, port);

@@ -1,3 +1,6 @@
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class PeerInfo {
@@ -6,6 +9,7 @@ public class PeerInfo {
     public final int peerId;
     public Set<Integer> validPeerIds;
     public boolean hasFile;
+    public Map<Integer, BitSet> bitfields;
 
     public PeerInfo(int peerId) {
         this.peerId = peerId;
@@ -16,6 +20,7 @@ public class PeerInfo {
         this.hostname = hostname;
         this.peerId = peerId;
         hasFile = false;
+        bitfields = new HashMap<>();
     }
 
     public PeerInfo(int peerId, String hostname, int port, Set<Integer> validPeerIds) {
@@ -24,5 +29,15 @@ public class PeerInfo {
         this.peerId = peerId;
         this.validPeerIds = validPeerIds;
         hasFile = false;
+    }
+
+    public void setAllBits() {
+        BitSet temp = bitfields.get(peerId);
+        temp.set(0, temp.size()-1);
+    }
+
+    public boolean hasPieces() {
+        BitSet temp = bitfields.get(peerId);
+        return temp.cardinality() > 0;
     }
 }

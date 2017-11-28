@@ -41,9 +41,8 @@ public class ConnectionWorker implements Runnable {
                 Logger.logTCPConnection(peerInfo.peerId, remoteId);
             }
             //TODO: close connection and log rejection if the handshake fails.
-            //TODO: send bitfield if peer has something ot send, not if has file
             if(receivedHandshake){
-                if(peerInfo.hasFile) {
+                if(peerInfo.hasPieces()) {
                     //decide where we're storing the bitfields of the local peer and remote peers
                     //output.writeObject(new Bitfield());
                 }
