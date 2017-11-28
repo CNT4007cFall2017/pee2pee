@@ -6,9 +6,9 @@ import java.util.BitSet;
 public class Message implements Serializable {
     private int length;
     private int type; //0-7
-    protected byte[] payload;
+    protected BitSet payload;
 
-    public Message(int length, int type, byte[] payload) { //4-7
+    public Message(int length, int type, BitSet payload) { //4-7
         this.length = length;
         this.type = type;
         this.payload = payload;
@@ -21,18 +21,18 @@ public class Message implements Serializable {
         return type;
     }
 
-    public byte[] getPayload() {
+    public BitSet getPayload() {
         return payload;
     }
 
     public int getPayloadLength() {
-        return payload.length;
+        return payload.length();
     }
 
     public BitSet getPayloadBitset() {
         BitSet res = new BitSet(16);
         for (int i = 0; i < res.size(); i++) {
-            boolean isSet = payload[i] > 0;
+            boolean isSet = payload.get(i);
             res.set(i, isSet);
         }
 

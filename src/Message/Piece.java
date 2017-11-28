@@ -1,7 +1,9 @@
 package Message;
 
+import java.util.BitSet;
+
 public class Piece extends Message{
-    Piece (byte[] pieceIndF) {
+    Piece (BitSet pieceIndF) {
         super (4,Type.PIECE, pieceIndF);
     }
 }

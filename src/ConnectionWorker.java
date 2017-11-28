@@ -15,7 +15,6 @@ public class ConnectionWorker implements Runnable {
     private int remoteId;
     private PeerInfo peerInfo;
 
-
     public ConnectionWorker(Socket socket, PeerInfo peerInfo) {
         receivedHandshake = false;
         this.socket = socket;
@@ -44,7 +43,13 @@ public class ConnectionWorker implements Runnable {
             if(receivedHandshake){
                 if(peerInfo.hasPieces()) {
                     //decide where we're storing the bitfields of the local peer and remote peers
-                    //output.writeObject(new Bitfield());
+                    output.writeObject(new Bitfield(peerInfo.bitfields.get(peerInfo.peerId)));
+                    output.flush();
+                    //send Peer.bitfield
+                    System.out.println("Bitfield worksish has pieces");
+                } else {
+                    Bitfield incomingBitfield = (Bitfield)input.readObject();  //wait for remote to
+                    System.out.println("Bitfield worksish has NOOOOO pieces");
                 }
             }
         } catch (IOException e) {
