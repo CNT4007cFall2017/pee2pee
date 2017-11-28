@@ -1,7 +1,11 @@
 package Logger;
 
+import Message.Bitfield;
+
 import java.io.*;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.BitSet;
 import java.util.List;
 
 /**
@@ -24,6 +28,14 @@ public class Logger {
 
     public static void logTCPConnection(int pid1, int pid2) throws IOException {
         String message = String.format("%s: Peer %d makes a connection to Peer %d", LocalDateTime.now(), pid1, pid2);
+        log(message);
+    }
+
+    public static void logBitfieldRecieved(Bitfield bi) throws IOException {
+        String s;
+        s = Arrays.toString(bi.getPayload());
+
+        String message = String.format("%s: Peer recieves a bitfield: %s", LocalDateTime.now(), s);
         log(message);
     }
 

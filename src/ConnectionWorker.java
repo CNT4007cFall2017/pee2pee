@@ -45,6 +45,11 @@ public class ConnectionWorker implements Runnable {
                 if(peerInfo.hasPieces()) {
                     //decide where we're storing the bitfields of the local peer and remote peers
                     //output.writeObject(new Bitfield());
+                    output.writeObject(new Bitfield(peerInfo.toByteArray(peerInfo.bitfields.get(peerInfo.peerId))));  // send the handshake to remote peer
+                    output.flush();
+                } else {
+                    Bitfield incomingBitField = (Bitfield)input.readObject();  //wait for remote to
+                    Logger.logBitfieldRecieved(incomingBitField);
                 }
             }
         } catch (IOException e) {
