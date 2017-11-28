@@ -3,8 +3,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import Message.*;
-import java.util.Set;
-import Logger.*;
 
 public class ConnectionWorker implements Runnable {
 
@@ -32,19 +30,16 @@ public class ConnectionWorker implements Runnable {
     public void run() {
         //handshake
         try {
-//            output.writeObject(new Handshake(peerInfo.peerId));  // send the handshake to remote peer
-//            output.flush();
-//            Handshake incomingHandshake = (Handshake)input.readObject();  //wait for remote to
-            output.writeUTF("hello");
+            output.writeObject(new Handshake(peerInfo.peerId));  // send the handshake to remote peer
             output.flush();
-            String msg = input.readUTF();
-            System.out.println("got handshake message");
-//            remoteId = incomingHandshake.getIdField();
+            Handshake incomingHandshake = (Handshake)input.readObject();  //wait for remote to
+            remoteId = incomingHandshake.getIdField();
             if(peerInfo.validPeerIds.contains(remoteId)){
                 receivedHandshake = true;
-                System.out.println("connected");;
+                System.out.println("connected");
             }
             //TODO: close connection and log rejection if the handshake fails.
+            //TODO: send bitfield if peer has something ot send, not if has file
             if(receivedHandshake){
                 if(peerInfo.hasFile) {
                     //decide where we're storing the bitfields of the local peer and remote peers
@@ -53,13 +48,10 @@ public class ConnectionWorker implements Runnable {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
 
-        //while true
-            //listen for message
     }
 
 }
