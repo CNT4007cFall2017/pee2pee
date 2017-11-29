@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.BitSet;
 
 import Logger.Logger;
 import Message.*;
@@ -43,13 +44,11 @@ public class ConnectionWorker implements Runnable {
             //TODO: close connection and log rejection if the handshake fails.
             if(receivedHandshake){
                 if(peerInfo.hasPieces()) {
-                    //decide where we're storing the bitfields of the local peer and remote peers
-                    //output.writeObject(new Bitfield());
-                    output.writeObject(new Bitfield(peerInfo.toByteArray(peerInfo.bitfields.get(peerInfo.peerId))));  // send the handshake to remote peer
+                    output.writeObject(new Bitfield(peerInfo.getMyBitfield().toByteArray()));
                     output.flush();
                 } else {
-                    Bitfield incomingBitField = (Bitfield)input.readObject();  //wait for remote to
-                    Logger.logBitfieldRecieved(incomingBitField);
+                    Bitfield incomingBitField = (Bitfield)input.readObject();  //wait for remote to respond
+                    peerInfo.setBitField(remoteId, incomingBitField.getBitSet());
                 }
             }
         } catch (IOException e) {
