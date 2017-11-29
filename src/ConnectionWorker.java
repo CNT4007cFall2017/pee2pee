@@ -15,6 +15,7 @@ public class ConnectionWorker implements Runnable {
     private ObjectInputStream input;
     private int remoteId;
     private PeerInfo peerInfo;
+    public MessageHandler msgHandler;
 
 
     public ConnectionWorker(Socket socket, PeerInfo peerInfo) {
@@ -50,11 +51,23 @@ public class ConnectionWorker implements Runnable {
                     Bitfield incomingBitField = (Bitfield)input.readObject();  //wait for remote to respond
                     peerInfo.setBitField(remoteId, incomingBitField.getBitSet());
                 }
+                //add the remote peer to the list of remoteID's
+                peerInfo.remotePeers.add(remoteId);
+                //create a msgHandler, is there an issue keeping the
+                //remotePeer/Interested peers updated across threads?
+               msgHandler =  new MessageHandler(socket, peerInfo);
             }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        }
+        while(true){
+            try{
+                msgHandler.recv();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }
