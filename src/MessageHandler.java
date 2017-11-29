@@ -13,12 +13,12 @@ public class MessageHandler {
     private ObjectOutputStream output;
     private ObjectInputStream input;
     private Set<Integer> validPeerIds;
-    private Peer myPeer;
+    private PeerInfo myPeer;
     private int remotePeerId;
 
-    public MessageHandler(Socket _socket, Set<Integer> _validPeerIds, Peer _myPeer){
+    public MessageHandler(Socket _socket, PeerInfo _myPeer){
         connSock = _socket;
-        validPeerIds = _validPeerIds;
+        validPeerIds = _myPeer.remotePeers;
         myPeer = _myPeer;
 
         try {
@@ -62,7 +62,7 @@ public class MessageHandler {
     }
 
     private void handle(Message message) {
-        Peer temp;
+        Integer temp;
         switch (message.getType()) {
             case Type.HANDSHAKE:
                 int id = ((Handshake) message).getIdField();
@@ -77,20 +77,10 @@ public class MessageHandler {
                 }
                 break;
 
-            case Type.BITFIELD:
-                // store remote bitfield
-                BitSet bitfield = ((Bitfield) message).getBitSet();
-                myPeer.remoteBitfields.put(remotePeerId, bitfield);
-                if (myPeer.hasFile()) {
-                    send(new Bitfield(myPeer.getBitfield().toByteArray()));
-                }
-                amIInterested(bitfield);
-                break;
-
             case Type.INTERESTED:
                 temp = searchPeers(remotePeerId);
                 myPeer.interestedPeers.add(temp);
-                myPeer.notInterestedPeers.remove(temp);
+
                 try {
                     Logger.logInterestedMsg(myPeer.getId(), remotePeerId);
                 } catch (IOException e) {
@@ -100,7 +90,6 @@ public class MessageHandler {
 
             case Type.NOTINTERESTED:
                 temp = searchPeers(remotePeerId);
-                myPeer.notInterestedPeers.add(temp);
                 myPeer.interestedPeers.remove(temp);
                 try {
                     Logger.logNotInterestedMsg(myPeer.getId(), remotePeerId);
@@ -122,9 +111,9 @@ public class MessageHandler {
         }
 
     }
-    private Peer searchPeers(int peerID){
-        for (Peer p : myPeer.remotePeers){
-            if(p.getId() == peerID){
+    private Integer searchPeers(int peerID){
+        for (Integer p : myPeer.remotePeers){
+            if(p == peerID){
                 return p;
             }
         }

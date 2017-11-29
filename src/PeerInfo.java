@@ -4,9 +4,13 @@ public class PeerInfo {
     public int port;
     public String hostname;
     public final int peerId;
+    //we may no longer need this validPeerIds
     public Set<Integer> validPeerIds;
     public boolean hasFile;
     public HashMap<Integer, BitSet> bitfields;
+    public Set<Integer> interestedPeers;
+    public Set<Integer> remotePeers;
+
 
     public PeerInfo(int peerId) {
         this.peerId = peerId;
@@ -45,5 +49,12 @@ public class PeerInfo {
     public boolean hasPieces() {
         BitSet temp = bitfields.get(peerId);
         return temp.cardinality() > 0;
+    }
+    public int getId(){
+        return peerId;
+    }
+
+    public BitSet getBitfield() {
+        return bitfields.get(peerId);
     }
 }
