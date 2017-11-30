@@ -7,10 +7,7 @@
  */
 public class Process {
 
-//    private ServerSocket serverSoc;
     private FileHandler fileHandler;
-//    private int peerId;
-//
 
     private PeerInfo myPeer;
 
@@ -19,16 +16,5 @@ public class Process {
         myPeer = new PeerInfo(peerId);
 
         fileHandler = new FileHandler("config/PeerInfo.cfg", myPeer);
-//        new Thread(new ServerProcess(myPeer)).start();
-
-//        this.peerId = peerId;
-//
-//        fileHandler = new FileHandler("config/PeerInfo.cfg");
-//        fileHandler.gatherRemotePeers();
-//        fileHandler.setPeerInputLimit();
-//        myPeer = fileHandler.findSelf(peerId);
-//        fileHandler.initPeerLists(myPeer);
-//        myPeer.setRemotePeers(fileHandler.getRemotePeers());
-//        ConnectionHandler connectionHandler = new ConnectionHandler(fileHandler.getPeersToConnectTo(), myPeer, fileHandler.getAllowedPeerConnections());
     }
 }
