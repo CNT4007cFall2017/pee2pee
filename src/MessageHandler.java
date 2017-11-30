@@ -33,13 +33,7 @@ public class MessageHandler {
 
 
     public void send(Message message) {
-        try {
-            output.writeObject(message);
-            output.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        new Thread(new Sender(output, message)).start();
     }
 
 
