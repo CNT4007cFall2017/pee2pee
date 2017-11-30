@@ -38,6 +38,8 @@ public class ConnectionWorker implements Runnable {
             output.flush();
             Handshake incomingHandshake = (Handshake)input.readObject();  //wait for remote to
             remoteId = incomingHandshake.getIdField();
+            msgHandler =  new MessageHandler(input, output, peerInfo, remoteId);
+
             if(peerInfo.validPeerIds.contains(remoteId)){
                 receivedHandshake = true;
                 Logger.logTCPConnection(peerInfo.peerId, remoteId);
@@ -45,17 +47,12 @@ public class ConnectionWorker implements Runnable {
             //TODO: close connection and log rejection if the handshake fails.
             if(receivedHandshake){
                 if(peerInfo.hasPieces()) {
-                    output.writeObject(new Bitfield(peerInfo.getMyBitfield().toByteArray()));
+                    output.writeObject(new Bitfield(peerInfo.myBitfield.toByteArray()));
                     output.flush();
                 } else {
-                    Bitfield incomingBitField = (Bitfield)input.readObject();  //wait for remote to respond
-                    peerInfo.setBitField(remoteId, incomingBitField.getBitSet());
+                    msgHandler.recv();
                 }
-                //add the remote peer to the list of remoteID's
-                peerInfo.remotePeers.add(remoteId);
-                //create a msgHandler, is there an issue keeping the
-                //remotePeer/Interested peers updated across threads?
-               msgHandler =  new MessageHandler(socket, peerInfo);
+
             }
         } catch (IOException e) {
             e.printStackTrace();

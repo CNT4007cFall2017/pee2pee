@@ -7,16 +7,20 @@ public class PeerInfo {
     //we may no longer need this validPeerIds
     public Set<Integer> validPeerIds;
     public boolean hasFile;
-    public HashMap<Integer, BitSet> bitfields;
-    public Set<Integer> interestedPeers;
-    public Set<Integer> remotePeers;
+    public BitSet myBitfield;
+
+    public HashMap<Integer, RemotePeerInfo> interestedPeers;
+//    public Set<Integer> remotePeers;
+    public HashMap<Integer, RemotePeerInfo> remotePeers;
 
 
     public static final int BITFIELD_SIZE = 16;
 
     public PeerInfo(int peerId) {
         this.peerId = peerId;
-        bitfields = new HashMap<>();
+        remotePeers = new HashMap<>();
+        myBitfield = new BitSet(16);
+        interestedPeers = new HashMap<>();
     }
 
     public PeerInfo(int peerId, String hostname, int port) {
@@ -24,7 +28,9 @@ public class PeerInfo {
         this.hostname = hostname;
         this.peerId = peerId;
         hasFile = false;
-        bitfields = new HashMap<>();
+        remotePeers = new HashMap<>();
+        myBitfield = new BitSet(16);
+        interestedPeers = new HashMap<>();
     }
 
     public PeerInfo(int peerId, String hostname, int port, Set<Integer> validPeerIds) {
@@ -36,7 +42,7 @@ public class PeerInfo {
     }
 
     public void setAllBits() {
-        bitfields.get(peerId).set(0, BITFIELD_SIZE);
+        myBitfield.set(0, BITFIELD_SIZE);
     }
     public byte[] toByteArray(BitSet bits) {
         byte[] bytes = new byte[bits.length()/8];
@@ -48,23 +54,17 @@ public class PeerInfo {
         return bytes;
     }
 
-    public BitSet getMyBitfield() {
-        return bitfields.get(peerId);
+    public void setRemoteBitField(int key, Integer pieceIndex) {
+        remotePeers.get(key).bitfield.set(pieceIndex);
     }
-
-    public void setBitField(int key, BitSet bitField) {
-        bitfields.replace(key, bitField);
+    public void setMyBitField(Integer pieceIndex) {
+        myBitfield.set(pieceIndex);
     }
 
     public boolean hasPieces() {
-        BitSet temp = bitfields.get(peerId);
-        return temp.cardinality() > 0;
+        return myBitfield.cardinality() > 0;
     }
     public int getId(){
         return peerId;
-    }
-
-    public BitSet getBitfield() {
-        return bitfields.get(peerId);
     }
 }

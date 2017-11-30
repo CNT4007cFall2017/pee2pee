@@ -33,8 +33,12 @@ public class FileHandler {
                 int port = Integer.parseInt(tokens[2]);
                 boolean hasFile = tokens[3].equals("1");
 
-                validPeerIds.add(currId);
-                myPeer.bitfields.put(currId, new BitSet(16));
+
+
+                if (myPeer.peerId != currId) {
+                    validPeerIds.add(currId);
+                    myPeer.remotePeers.put(currId, new RemotePeerInfo());
+                }
 
                 if (myPeer.peerId == currId) { // found self
                     foundSelf = true;

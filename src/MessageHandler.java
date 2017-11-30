@@ -12,25 +12,17 @@ public class MessageHandler {
     private Socket connSock;
     private ObjectOutputStream output;
     private ObjectInputStream input;
-    private Set<Integer> validPeerIds;
     private PeerInfo myPeer;
     private int remotePeerId;
 
-    public MessageHandler(Socket _socket, PeerInfo _myPeer){
-        connSock = _socket;
-        validPeerIds = _myPeer.remotePeers;
+    public MessageHandler(ObjectInputStream input, ObjectOutputStream output, PeerInfo _myPeer, int remotePeerId){
+        this.input = input;
+        this.output = output;
         myPeer = _myPeer;
-
-        try {
-            output = new ObjectOutputStream(connSock.getOutputStream());
-            input = new ObjectInputStream(connSock.getInputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.remotePeerId = remotePeerId;
     }
     public void teardown() {
         try {
-            connSock.close();
             input.close();
             output.close();
         } catch (IOException e) {
@@ -62,24 +54,11 @@ public class MessageHandler {
     }
 
     private void handle(Message message) {
-        Integer temp;
+        RemotePeerInfo temp;
         switch (message.getType()) {
-            case Type.HANDSHAKE:
-                int id = ((Handshake) message).getIdField();
-
-                if (validateHandshake(id)) {
-                    remotePeerId = id;
-                    try {
-                        Logger.logTCPConnection(remotePeerId, myPeer.getId());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                break;
-
             case Type.INTERESTED:
-                temp = searchPeers(remotePeerId);
-                myPeer.interestedPeers.add(temp);
+                temp = myPeer.remotePeers.get(remotePeerId);
+                myPeer.interestedPeers.put(remotePeerId, temp);
 
                 try {
                     Logger.logInterestedMsg(myPeer.getId(), remotePeerId);
@@ -89,39 +68,34 @@ public class MessageHandler {
                 break;
 
             case Type.NOTINTERESTED:
-                temp = searchPeers(remotePeerId);
-                myPeer.interestedPeers.remove(temp);
+                myPeer.interestedPeers.remove(remotePeerId);
                 try {
                     Logger.logNotInterestedMsg(myPeer.getId(), remotePeerId);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 break;
+            case Type.BITFIELD:
+                Bitfield incomingBitField = (Bitfield)message;
+                myPeer.remotePeers.get(remotePeerId).bitfield = incomingBitField.getBitSet();
+                amIInterested(remotePeerId);
+
+            case Type.REQUEST:
+                //prepare a chunk and send
 
             default:
-                teardown();
+//                teardown();
         }
     }
-    private void amIInterested(BitSet bitField) {
-        BitSet temp = (BitSet) myPeer.getBitfield().clone();
+    private void amIInterested(int remoteId) {
+        BitSet temp = (BitSet) myPeer.myBitfield.clone();
+        BitSet remoteBitfield = myPeer.remotePeers.get(remoteId).bitfield;
+        temp.or(remoteBitfield);
 
-        temp.or(bitField);
-        if(temp.cardinality() > myPeer.getBitfield().cardinality()){
+        if(temp.cardinality() > myPeer.myBitfield.cardinality()){
             send(new Interested());
         }
 
     }
-    private Integer searchPeers(int peerID){
-        for (Integer p : myPeer.remotePeers){
-            if(p == peerID){
-                return p;
-            }
-        }
-        return null;
 
-    }
-
-    private boolean validateHandshake(int peerId) {
-        return validPeerIds.contains(peerId);
-    }
 }
