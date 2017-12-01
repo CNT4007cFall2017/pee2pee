@@ -1,11 +1,7 @@
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.rmi.Remote;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
-
+import java.util.*;
 
 
 public class ChokerUnchoker extends TimerTask {
@@ -28,7 +24,8 @@ public class ChokerUnchoker extends TimerTask {
         for(int pID : localPeerInfo.remotePeers.keySet()){
             remotePeers.add(localPeerInfo.remotePeers.get(pID));
         }
-        //
+        Collections.sort(remotePeers, new SortByBytes());
+        //We examine the top X (from config file) remotePeers
     }
 }
 

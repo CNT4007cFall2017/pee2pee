@@ -8,6 +8,7 @@ public class PeerInfo {
     public Set<Integer> validPeerIds;
     public boolean hasFile;
     public BitSet myBitfield;
+    public HashMap<String, Integer> CommonConfig;
 
     public HashMap<Integer, RemotePeerInfo> interestedPeers;
 //    public Set<Integer> remotePeers;

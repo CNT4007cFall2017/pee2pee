@@ -14,7 +14,6 @@ public class Process {
     public Process(int peerId) {
 
         myPeer = new PeerInfo(peerId);
-
-        fileHandler = new FileHandler("config/PeerInfo.cfg", myPeer);
+        fileHandler = new FileHandler("config/PeerInfo.cfg", "config/Common.cfg", myPeer);
     }
 }
