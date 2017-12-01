@@ -81,4 +81,21 @@ public class PeerInfo {
     public int getId(){
         return peerId;
     }
+
+    public void setRemoteChoke(int remoteId, boolean isChoked) {
+        this.remotePeers.get(remoteId).choked = isChoked;
+    }
+
+    public void resetBytesReceived() {
+        for (int remoteId : remotePeers.keySet()) {
+            RemotePeerInfo currRemotePeer = remotePeers.get(remoteId);
+            currRemotePeer.bytesReceived = 0;
+        }
+    }
+
+    public void reset(PeerInfo peerInfo) {
+        this.remotePeers = peerInfo.remotePeers;
+        this.preferredNeighbors = peerInfo.preferredNeighbors;
+        this.unpreferredNeighbors = peerInfo.unpreferredNeighbors;
+    }
 }

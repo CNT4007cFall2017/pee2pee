@@ -28,6 +28,7 @@ public class ChokerUnchoker extends TimerTask {
             remotePeers.add(temp.remotePeers.get(pID));
         }
         Collections.sort(remotePeers, new SortByBytes());
+        temp.resetBytesReceived();
         int numPreferred = temp.CommonConfig.get(PeerInfo.NUM_PREFERRED);
 
         for (int i = 0; i < remotePeers.size(); i++) {
@@ -40,6 +41,8 @@ public class ChokerUnchoker extends TimerTask {
                 temp.unpreferredNeighbors.add(currRemotePeer);
             }
         }
+
+        localPeerInfo.reset(temp);
 
         for (RemotePeerInfo rpi : temp.preferredNeighbors) {
             rpi.messageHandler.send(new Unchoke());
