@@ -31,12 +31,13 @@ public class ChokerUnchoker extends TimerTask {
         int numPreferred = temp.CommonConfig.get(PeerInfo.NUM_PREFERRED);
 
         for (int i = 0; i < remotePeers.size(); i++) {
+            RemotePeerInfo currRemotePeer = remotePeers.get(i);
             if (i < numPreferred) {
-                temp.preferredNeighbors.add(remotePeers.get(i));
-                temp.unpreferredNeighbors.remove(remotePeers.get(i));
+                temp.preferredNeighbors.add(currRemotePeer);
+                temp.unpreferredNeighbors.remove(currRemotePeer);
             } else {
-                temp.preferredNeighbors.remove(remotePeers.get(i));
-                temp.unpreferredNeighbors.add(remotePeers.get(i));
+                temp.preferredNeighbors.remove(currRemotePeer);
+                temp.unpreferredNeighbors.add(currRemotePeer);
             }
         }
 
