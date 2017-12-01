@@ -1,3 +1,7 @@
+import Message.Choke;
+import Message.Unchoke;
+
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.rmi.Remote;
@@ -17,15 +21,31 @@ public class ChokerUnchoker extends TimerTask {
   }
   //function for sorting the bytes recieved array every execute cycle.
 
-    public static int i = 0;
     public void run() {
-        System.out.println("Timer ran " + ++i);
+        PeerInfo temp = new PeerInfo(localPeerInfo);
         remotePeers.clear();
-        for(int pID : localPeerInfo.remotePeers.keySet()){
-            remotePeers.add(localPeerInfo.remotePeers.get(pID));
+        for(int pID : temp.remotePeers.keySet()){
+            remotePeers.add(temp.remotePeers.get(pID));
         }
         Collections.sort(remotePeers, new SortByBytes());
-        //We examine the top X (from config file) remotePeers
+        int numPreferred = temp.CommonConfig.get(PeerInfo.NUM_PREFERRED);
+
+        for (int i = 0; i < remotePeers.size(); i++) {
+            if (i < numPreferred) {
+                temp.preferredNeighbors.add(remotePeers.get(i));
+                temp.unpreferredNeighbors.remove(remotePeers.get(i));
+            } else {
+                temp.preferredNeighbors.remove(remotePeers.get(i));
+                temp.unpreferredNeighbors.add(remotePeers.get(i));
+            }
+        }
+
+        for (RemotePeerInfo rpi : temp.preferredNeighbors) {
+            rpi.messageHandler.send(new Unchoke());
+        }
+        for(RemotePeerInfo rpi : temp.unpreferredNeighbors){
+            rpi.messageHandler.send(new Choke());
+        }
     }
 }
 

@@ -9,10 +9,18 @@ public class PeerInfo {
     public boolean hasFile;
     public BitSet myBitfield;
     public HashMap<String, Integer> CommonConfig;
-
     public HashMap<Integer, RemotePeerInfo> interestedPeers;
-//    public Set<Integer> remotePeers;
     public HashMap<Integer, RemotePeerInfo> remotePeers;
+    public HashSet<RemotePeerInfo> preferredNeighbors;
+    public HashSet<RemotePeerInfo> unpreferredNeighbors;
+    //Constants for config file.
+    public static final String NUM_PREFERRED= "NumberOfPreferredNeighbors";
+    public static final String UNCHOKING_INTERVAL= "UnchokingInterval";
+    public static final String OP_UNCHOKING_INTERVAL= "OptimisticUnchokingInterval";
+    public static final String FILE_NAME = "FileName";
+    public static final String FILE_SIZE= "FileSize";
+    public static final String PIECE_SIZE= "PieceSize";
+
 
 
     public static final int BITFIELD_SIZE = 16;
@@ -22,6 +30,7 @@ public class PeerInfo {
         remotePeers = new HashMap<>();
         myBitfield = new BitSet(16);
         interestedPeers = new HashMap<>();
+        preferredNeighbors = new HashSet<>();
     }
 
     public PeerInfo(int peerId, String hostname, int port) {

@@ -8,8 +8,7 @@ public class RemotePeerInfo {
     public int bytesReceived;
     public boolean choked;
     public BitSet bitfield;
-    public ObjectInputStream input;
-    public ObjectOutputStream output;
+    public MessageHandler messageHandler;
 
     public RemotePeerInfo(int pid) {
         //this is redundant, but useful for the bytes recieved array in Unchoker
