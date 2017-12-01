@@ -24,7 +24,7 @@ public class RemotePeerInfo {
     }
 }
 
-public class SortByBytes implements Comparator<RemotePeerInfo> {
+class SortByBytes implements Comparator<RemotePeerInfo> {
 
     @Override
     public int compare(RemotePeerInfo o1, RemotePeerInfo o2) {

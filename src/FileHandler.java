@@ -7,16 +7,17 @@ public class FileHandler {
     private PeerInfo myPeer;
     private Set<Integer> validPeerIds;
 
-    public FileHandler(String configFileName, PeerInfo myPeer) {
+    public FileHandler(String peerInfoConfig, String CommonConfig, PeerInfo myPeer) {
         validPeerIds = new HashSet<>();
         peersToConnectTo = new ArrayList<>();
         this.myPeer = myPeer;
 
-        readConfigFile(configFileName);
+        readPeerInfoConfig(peerInfoConfig);
+        readCommonConfig(CommonConfig);
         connectToPeers();
     }
 
-    private void readConfigFile(String configFileName) {
+    private void readPeerInfoConfig(String configFileName) {
         File configFile = new File(configFileName);
 
         try {
@@ -63,6 +64,26 @@ public class FileHandler {
         } catch(IOException e) {
             e.printStackTrace();
         }
+    }
+    private void readCommonConfig(String commonConfig){
+        File configFile = new File(commonConfig);
+        try{
+            FileReader fileReader = new FileReader(configFile);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                String[] tokens = line.split(" ");
+                String attribute = tokens[0];
+                int value = Integer.parseInt(tokens[1]);
+                myPeer.CommonConfig.put(attribute, value);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     private void connectToPeers() {
