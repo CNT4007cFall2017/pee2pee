@@ -46,7 +46,10 @@ public class ConnectionWorker implements Runnable {
                 receivedHandshake = true;
                 Logger.logTCPConnection(peerInfo.peerId, remoteId);
             }
-            //TODO: close connection and log rejection if the handshake fails.
+            else{
+                //TODO: close connection and log rejection if the handshake fails.
+            }
+
             if(receivedHandshake){
                 if(peerInfo.hasPieces()) {
                     output.writeObject(new Bitfield(peerInfo.myBitfield.toByteArray()));

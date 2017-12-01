@@ -3,14 +3,16 @@ import java.io.ObjectOutputStream;
 import java.util.BitSet;
 
 public class RemotePeerInfo {
-
+    public int pID;
     public int bytesReceived;
     public boolean choked;
     public BitSet bitfield;
     public ObjectInputStream input;
     public ObjectOutputStream output;
 
-    public RemotePeerInfo() {
+    public RemotePeerInfo(int pid) {
+        //this is redundant, but useful for the bytes recieved array in Unchoker
+        pID = pid;
         bytesReceived = 0;
         choked = true;
         bitfield = new BitSet(16);

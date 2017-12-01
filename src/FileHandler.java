@@ -37,7 +37,7 @@ public class FileHandler {
 
                 if (myPeer.peerId != currId) {
                     validPeerIds.add(currId);
-                    myPeer.remotePeers.put(currId, new RemotePeerInfo());
+                    myPeer.remotePeers.put(currId, new RemotePeerInfo(currId));
                 }
 
                 if (myPeer.peerId == currId) { // found self
