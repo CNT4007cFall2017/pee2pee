@@ -34,6 +34,10 @@ public class PeerInfo {
         interestedPeers = new HashMap<>();
     }
 
+    public PeerInfo(PeerInfo peerInfo) {
+        this(peerInfo.peerId, peerInfo.hostname, peerInfo.port);
+    }
+
     public PeerInfo(int peerId, String hostname, int port, Set<Integer> validPeerIds) {
         this.port = port;
         this.hostname = hostname;
