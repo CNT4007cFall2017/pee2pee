@@ -73,6 +73,15 @@ public class MessageHandler {
                 Bitfield incomingBitField = (Bitfield)message;
                 myPeer.remotePeers.get(remotePeerId).bitfield = incomingBitField.getBitSet();
                 amIInterested(remotePeerId);
+                break;
+
+            case Type.CHOKE:
+                myPeer.setRemoteChoke(remotePeerId, true);
+                break;
+
+            case Type.UNCHOKE:
+                myPeer.setRemoteChoke(remotePeerId, false);
+                break;
 
             case Type.REQUEST:
                 //prepare a chunk and send
