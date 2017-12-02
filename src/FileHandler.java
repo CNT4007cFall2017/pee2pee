@@ -17,65 +17,67 @@ public class FileHandler {
         connectToPeers();
     }
 
-    private void readPeerInfoConfig(String configFileName) {
+    private void readPeerInfoConfig(String configFileName) { //Take in PeerInfo.cfg and read the file
         File configFile = new File(configFileName);
 
         try {
-            FileReader fileReader = new FileReader(configFile);
+            FileReader fileReader = new FileReader(configFile); //Set file reader to take PeerInfo.cfg
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             String line;
-            boolean foundSelf = false;
+            boolean foundSelf = false; //bool for self peer
 
             while ((line = bufferedReader.readLine()) != null) { // loop through all peers in config file
-                String[] tokens = line.split(" ");
+                String[] tokens = line.split(" "); //Split config by spaces
 
-                int currId = Integer.parseInt(tokens[0]);
+                int currId = Integer.parseInt(tokens[0]); //Set current ID (local host)
                 String hostname = tokens[1];
-                int port = Integer.parseInt(tokens[2]);
-                boolean hasFile = tokens[3].equals("1");
+                int port = Integer.parseInt(tokens[2]); //Set port number
+                boolean hasFile = tokens[3].equals("1");    //Check if it has the file
+
+                //My peer should have all info from config File\
 
 
 
-                if (myPeer.peerId != currId) {
-                    validPeerIds.add(currId);
+                if (myPeer.peerId != currId) { //If peer is not itself
+                    validPeerIds.add(currId);   //Add to valid peers
                     myPeer.remotePeers.put(currId, new RemotePeerInfo(currId));
                 }
 
-                if (myPeer.peerId == currId) { // found self
+                if (myPeer.peerId == currId) { // found self, set myPeer values to values from files
                     foundSelf = true;
                     myPeer.hostname = hostname;
                     myPeer.port = port;
                     myPeer.hasFile = hasFile;
 
-                    if (hasFile) {
+                    if (hasFile) {  //If self hasfile, set the bits for bitfield
                         myPeer.setAllBits();
                     }
 
-                    new Thread(new ServerProcess(myPeer)).start();
+                    new Thread(new ServerProcess(myPeer)).start(); //Create a new thread
                 } else if (!foundSelf) { // looking at peer above self in the list
-                    PeerInfo currPeer = new PeerInfo(currId, hostname, port);
+                    PeerInfo currPeer = new PeerInfo(currId, hostname, port); //Create new PeerInfo
                     peersToConnectTo.add(currPeer);
                 }
             }
 
-            myPeer.validPeerIds = validPeerIds;
+            myPeer.validPeerIds = validPeerIds; //Set specific peer's valid peer Ids
         } catch(FileNotFoundException e) {
             e.printStackTrace();
         } catch(IOException e) {
             e.printStackTrace();
         }
     }
-    private void readCommonConfig(String commonConfig){
-        File configFile = new File(commonConfig);
+    private void readCommonConfig(String commonConfig){ //Take in Common.cfg and read the file
+        File configFile = new File(commonConfig);   //Read in common.cfg
         try{
             FileReader fileReader = new FileReader(configFile);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                String[] tokens = line.split(" ");
-                String attribute = tokens[0];
+            while ((line = bufferedReader.readLine()) != null) {    //Will line exists
+                String[] tokens = line.split(" "); //Split line by spaces
+                String attribute = tokens[0];   //
                 int value = Integer.parseInt(tokens[1]);
-                myPeer.CommonConfig.put(attribute, value);
+                myPeer.CommonConfig.put(attribute, value); //Makes a set using attribute and value
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -90,7 +92,7 @@ public class FileHandler {
         for (PeerInfo p : peersToConnectTo) {
             // spawn threads for each connection
             try {
-                new Thread(new ConnectionWorker(new Socket(p.hostname, p.port), myPeer)).start();
+                new Thread(new ConnectionWorker(new Socket(p.hostname, p.port), myPeer)).start(); //Start a thread for each peer to connect to
             } catch (IOException e) {
                 e.printStackTrace();
             }
