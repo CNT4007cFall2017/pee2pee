@@ -105,9 +105,10 @@ public class MessageHandler {
 
             case Type.PIECE:
                 Piece incomingPiece = (Piece)message;
-                myPeer.myBitfield.set(incomingPiece.getIndex());
+                int index = incomingPiece.getIndex();
+                myPeer.myBitfield.set(index);
                 notifyPeersOfPiece(incomingPiece.getSubsetOfPayload(0,3));
-                System.out.println(incomingPiece.getIndex());
+                System.out.println(index);
                 if(!myPeer.remotePeers.get(remotePeerId).choked) {
                     byte[] nextPiece = myPeer.getNeededPieceIndex(remotePeerId);
                     send(new Request(nextPiece));
