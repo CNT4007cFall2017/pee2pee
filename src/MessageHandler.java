@@ -105,11 +105,19 @@ public class MessageHandler {
                 Piece incomingPiece = (Piece)message;
                 int index = incomingPiece.getIndex();
                 myPeer.myBitfield.set(index);
+                notifyPeersOfPiece(incomingPiece.getSubsetOfPayload(0,3));
+                System.out.println(incomingPiece.getIndex());
                 byte[] nextPiece = myPeer.getNeededPieceIndex(remotePeerId);
                 send(new Request(nextPiece));
 
             default:
 //                teardown();
+        }
+    }
+    private void notifyPeersOfPiece(byte[] pieceIndex){
+        Have have = new Have(pieceIndex);
+        for(Integer key : myPeer.remotePeers.keySet()){
+            myPeer.remotePeers.get(key).messageHandler.send(have);
         }
     }
     private void amIInterested(int remoteId) {
