@@ -34,6 +34,11 @@ public class MessageHandler {
 
 
     public void send(Message message) {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         new Thread(new Sender(output, message)).start();
     }
 
@@ -106,14 +111,22 @@ public class MessageHandler {
             case Type.PIECE:
                 Piece incomingPiece = (Piece)message;
                 int index = incomingPiece.getIndex();
+                byte[] pieceData = incomingPiece.getPieceData();
+                myPeer.newPieces.put(index, pieceData); // TODO: sync this
                 myPeer.myBitfield.set(index);
                 notifyPeersOfPiece(incomingPiece.getSubsetOfPayload(0,3));
                 System.out.println(index);
-                if(!myPeer.remotePeers.get(remotePeerId).choked) {
+
+                if (myPeer.downloadComplete()) {
+                    myPeer.writeFile();
+                    System.out.println("done");
+                } else if (!myPeer.remotePeers.get(remotePeerId).choked) {
                     byte[] nextPiece = myPeer.getNeededPieceIndex(remotePeerId);
                     send(new Request(nextPiece));
                 }
+
                 break;
+
             case Type.HAVE:
                 Have incomingHave = (Have)message;
                 int remotePiece = incomingHave.getIndex();
@@ -121,7 +134,6 @@ public class MessageHandler {
                 amIInterested(remotePeerId);
                 Logger.logHaveMsg(myPeer.peerId, remotePeerId, remotePiece);
                 break;
-
             default:
 //                teardown();
         }

@@ -14,20 +14,19 @@ public class Piece extends Message{
     }
 
     public int getIndex() {
-        byte[] index = new byte[4];
-
-        for (int i = 0; i < 4; i++) {
-            index[i] = payload[i];
-        }
-
-        ByteBuffer bb = ByteBuffer.wrap(index);
+        ByteBuffer bb = ByteBuffer.wrap(getSubsetOfPayload(0, 3));
         return bb.getInt();
     }
 
+    public byte[] getPieceData() {
+        return getSubsetOfPayload(4, (payload.length - 1));
+    }
+
     public byte[] getSubsetOfPayload(int start, int end){
-        byte[] subset = new byte[end - start+1];
+        byte[] subset = new byte[(end - start) + 1];
+        
         for (int i = start; i <= end; i++){
-            subset[i] = payload[i];
+            subset[i - start] = payload[i];
         }
         return subset;
     }

@@ -1,3 +1,5 @@
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
 import java.util.*;
@@ -84,7 +86,7 @@ public class FileHandler {
                 }
 
             }
-            PeerInfo.BITFIELD_SIZE = (int) Math.ceil(myPeer.CommonConfig.get(PeerInfo.FILE_SIZE).longValue()/myPeer.CommonConfig.get(PeerInfo.PIECE_SIZE).longValue());
+            PeerInfo.BITFIELD_SIZE = (int)Math.ceil((double)myPeer.CommonConfig.get(PeerInfo.FILE_SIZE)/(double)myPeer.CommonConfig.get(PeerInfo.PIECE_SIZE));
             myPeer.myBitfield = new BitSet(PeerInfo.BITFIELD_SIZE);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -96,7 +98,7 @@ public class FileHandler {
     }
     public void splitFile() {
         File f = new File("config/" + fileName);
-
+        int index = 0;
         int sizeOfPiece = myPeer.CommonConfig.get(PeerInfo.PIECE_SIZE); //sets an int for size of individual Piece
         byte[] buffer = new byte[sizeOfPiece];
 
@@ -104,7 +106,7 @@ public class FileHandler {
              BufferedInputStream bis = new BufferedInputStream(fis)) {
 
             while (bis.read(buffer) > 0) { //Read buffer to Pieces
-                myPeer.Pieces.add(buffer);
+                myPeer.Pieces.add(buffer.clone());
             }
             bis.close();
             fis.close();
@@ -112,8 +114,8 @@ public class FileHandler {
             e.printStackTrace();
         }
     }
-    public void mergeFile(byte[] pieces) {
-        try(FileOutputStream fos = new FileOutputStream("/config/success.jpg")) {
+    public static void mergeFile(byte[] pieces) {
+        try(FileOutputStream fos = new FileOutputStream("config/success.jpg")) {
             fos.write(pieces);
             fos.close();
         } catch (IOException e) {

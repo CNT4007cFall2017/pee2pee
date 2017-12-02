@@ -1,3 +1,5 @@
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.*;
 import Message.Message.*;
@@ -6,7 +8,7 @@ public class PeerInfo {
     public int port;
     public String hostname;
     public int peerId;
-    public List<byte[]> Pieces;
+    public ArrayList<byte[]> Pieces;
     //we may no longer need this validPeerIds
     public Set<Integer> validPeerIds;
     public boolean hasFile;
@@ -153,5 +155,23 @@ public class PeerInfo {
         bb.putInt(remoteBitfield.nextSetBit(0));
 
         return bb.array();
+    }
+
+    public boolean downloadComplete() {
+        return myBitfield.cardinality() == BITFIELD_SIZE;
+    }
+
+    public void writeFile() {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        for (int i = 0; i < newPieces.size(); i++) {
+            try {
+                outputStream.write(newPieces.get(i));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        FileHandler.mergeFile(outputStream.toByteArray());
     }
 }
