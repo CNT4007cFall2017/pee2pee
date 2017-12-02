@@ -36,11 +36,9 @@ public class FileHandler {
 
                 //My peer should have all info from config File\
 
-
-
-                if (myPeer.peerId != currId) { //If peer is not itself
-                    validPeerIds.add(currId);   //Add to valid peers
-                    myPeer.remotePeers.put(currId, new RemotePeerInfo(currId));
+                if (myPeer.peerId != currId) {
+                    validPeerIds.add(currId);
+//                    myPeer.remotePeers.put(currId, new RemotePeerInfo(currId));
                 }
 
                 if (myPeer.peerId == currId) { // found self, set myPeer values to values from files

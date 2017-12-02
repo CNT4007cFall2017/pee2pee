@@ -14,41 +14,40 @@ public class ChokerUnchoker extends TimerTask {
   public ChokerUnchoker (PeerInfo peerInfo) {
       super();
       localPeerInfo = peerInfo;
-      remotePeers = new ArrayList<RemotePeerInfo>();
-      //initiliaze bytes recieved array;
-      //iterate over the localremotePeers hashmap and create and entry in bytesrecieved for each;
-
+      remotePeers = new ArrayList<>();
   }
-  //function for sorting the bytes recieved array every execute cycle.
 
     public void run() {
         PeerInfo temp = new PeerInfo(localPeerInfo);
-        remotePeers.clear();
-        for(int pID : temp.remotePeers.keySet()){
-            remotePeers.add(temp.remotePeers.get(pID));
-        }
-        Collections.sort(remotePeers, new SortByBytes());
-        temp.resetBytesReceived();
-        int numPreferred = temp.CommonConfig.get(PeerInfo.NUM_PREFERRED);
 
-        for (int i = 0; i < remotePeers.size(); i++) {
-            RemotePeerInfo currRemotePeer = remotePeers.get(i);
-            if (i < numPreferred) {
-                temp.preferredNeighbors.add(currRemotePeer);
-                temp.unpreferredNeighbors.remove(currRemotePeer);
-            } else {
-                temp.preferredNeighbors.remove(currRemotePeer);
-                temp.unpreferredNeighbors.add(currRemotePeer);
+        if (temp.remotePeers.size() > 0) {
+            remotePeers.clear();
+            for (int pID : temp.remotePeers.keySet()) {
+                remotePeers.add(temp.remotePeers.get(pID));
             }
-        }
+            Collections.sort(remotePeers, new SortByBytes());
+            temp.resetBytesReceived();
+            int numPreferred = temp.CommonConfig.get(PeerInfo.NUM_PREFERRED);
 
-        localPeerInfo.reset(temp);
+            for (int i = 0; i < remotePeers.size(); i++) {
+                RemotePeerInfo currRemotePeer = remotePeers.get(i);
+                if (i < numPreferred) {
+                    temp.preferredNeighbors.add(currRemotePeer);
+                    temp.unpreferredNeighbors.remove(currRemotePeer);
+                } else {
+                    temp.preferredNeighbors.remove(currRemotePeer);
+                    temp.unpreferredNeighbors.add(currRemotePeer);
+                }
+            }
 
-        for (RemotePeerInfo rpi : temp.preferredNeighbors) {
-            rpi.messageHandler.send(new Unchoke());
-        }
-        for(RemotePeerInfo rpi : temp.unpreferredNeighbors){
-            rpi.messageHandler.send(new Choke());
+            localPeerInfo.reset(temp);
+
+            for (RemotePeerInfo rpi : temp.preferredNeighbors) {
+                rpi.messageHandler.send(new Unchoke());
+            }
+            for (RemotePeerInfo rpi : temp.unpreferredNeighbors) {
+                rpi.messageHandler.send(new Choke());
+            }
         }
     }
 }
