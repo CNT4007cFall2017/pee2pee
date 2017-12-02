@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.util.BitSet;
 import java.util.Set;
 
@@ -97,6 +98,10 @@ public class MessageHandler {
 
                     byte[] nextPiece = myPeer.getNeededPieceIndex(remotePeerId);
                     send(new Request(nextPiece));
+
+                    ByteBuffer bb = ByteBuffer.wrap(nextPiece);
+
+                    myPeer.writeRequestedPieces(bb.getInt(), true);
                 }
                 break;
 
@@ -106,6 +111,7 @@ public class MessageHandler {
                 byte[] piece = myPeer.Pieces.get(pieceIndex);
                 byte[] payload = constructPiecePayload(incomingRequest.getPayload(), piece);
                 send(new Piece(payload));
+                myPeer.writeRequestedPieces(pieceIndex, false );
                 break;
 
             case Type.PIECE:
@@ -120,9 +126,10 @@ public class MessageHandler {
                 if (myPeer.downloadComplete()) {
                     myPeer.writeFile();
                     Logger.logCompleteDownload(myPeer.peerId);
-                } else if (!myPeer.remotePeers.get(remotePeerId).choked) {
+                } else if (!myPeer.remotePeers.get(remotePeerId).choked && !myPeer.requestedPieces.contains(index)) {
                     byte[] nextPiece = myPeer.getNeededPieceIndex(remotePeerId);
                     send(new Request(nextPiece));
+                    myPeer.writeRequestedPieces(index, true);
                 }
 
                 break;

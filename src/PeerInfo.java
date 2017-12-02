@@ -19,6 +19,7 @@ public class PeerInfo {
     public HashMap<Integer, byte[]> newPieces;
     public HashSet<RemotePeerInfo> preferredNeighbors;
     public HashSet<RemotePeerInfo> unpreferredNeighbors;
+    public HashSet<Integer> requestedPieces;
     //Constants for config file.
     public static final String NUM_PREFERRED= "NumberOfPreferredNeighbors";
     public static final String UNCHOKING_INTERVAL= "UnchokingInterval";
@@ -87,6 +88,16 @@ public class PeerInfo {
             }
 
         }
+    }
+    public void writeRequestedPieces(int index, Boolean add){
+        synchronized (this) {
+            if (add) {
+                requestedPieces.add(index);
+            } else {
+                requestedPieces.remove(index);
+            }
+        }
+
     }
 
     public void writeRemotePeers(int pid, RemotePeerInfo rpi, Boolean add) {
