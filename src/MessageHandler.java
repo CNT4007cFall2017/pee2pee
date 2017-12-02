@@ -76,13 +76,17 @@ public class MessageHandler {
                 break;
 
             case Type.CHOKE:
-                myPeer.setRemoteChoke(remotePeerId, true);
-                Logger.logChoke(myPeer.peerId, remotePeerId);
+                if(!myPeer.remotePeers.get(remotePeerId).choked) {
+                    myPeer.setRemoteChoke(remotePeerId, true);
+                    Logger.logChoke(myPeer.peerId, remotePeerId);
+                }
                 break;
 
             case Type.UNCHOKE:
-                myPeer.setRemoteChoke(remotePeerId, false);
-                Logger.logUnchoke(myPeer.peerId, remotePeerId);
+                if(myPeer.remotePeers.get(remotePeerId).choked) {
+                    myPeer.setRemoteChoke(remotePeerId, false);
+                    Logger.logUnchoke(myPeer.peerId, remotePeerId);
+                }
                 break;
 
             case Type.REQUEST:
