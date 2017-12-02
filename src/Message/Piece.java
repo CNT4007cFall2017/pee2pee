@@ -23,4 +23,12 @@ public class Piece extends Message{
         ByteBuffer bb = ByteBuffer.wrap(index);
         return bb.getInt();
     }
+
+    public byte[] getSubsetOfPayload(int start, int end){
+        byte[] subset = new byte[end - start];
+        for (int i = start; i <= end; i++){
+            subset[i] = payload[i];
+        }
+        return subset;
+    }
 }
