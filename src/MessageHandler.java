@@ -86,11 +86,15 @@ public class MessageHandler {
                 if(myPeer.remotePeers.get(remotePeerId).choked) {
                     myPeer.setRemoteChoke(remotePeerId, false);
                     Logger.logUnchoke(myPeer.peerId, remotePeerId);
+
+                    byte[] nextPiece = myPeer.getNeededPieceIndex(remotePeerId);
+                    send(new Request(nextPiece));
                 }
                 break;
 
             case Type.REQUEST:
-                //prepare a chunk and send
+                Request incomingRequest = (Request)message;
+                int pieceIndex = incomingRequest.getPieceIndex();
 
             default:
 //                teardown();
