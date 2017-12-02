@@ -52,7 +52,7 @@ public class MessageHandler {
         switch (message.getType()) {
             case Type.INTERESTED:
                 temp = myPeer.remotePeers.get(remotePeerId);
-                myPeer.interestedPeers.put(remotePeerId, temp);
+                myPeer.writeInterestedPeers(remotePeerId, temp, true);
 
                 try {
                     Logger.logInterestedMsg(myPeer.getId(), remotePeerId);
