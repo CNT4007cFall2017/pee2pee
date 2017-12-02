@@ -60,7 +60,7 @@ public class Logger {
         log(message);
     }
 
-    public static void logHaveMsg(String pid1, String pid2, int index) throws IOException {
+    public static void logHaveMsg(int pid1, int pid2, int index) throws IOException {
         String message = String.format("%s: Peer %s received the 'have' message from %s for the piece %d", LocalDateTime.now(), pid1, pid2, index);
         log(message);
     }

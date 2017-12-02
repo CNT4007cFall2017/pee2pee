@@ -39,12 +39,14 @@ public class MessageHandler {
 
 
     public void recv() throws IOException {
-        Message recMessage;
-        try {
-            recMessage = (Message)input.readObject();
-            handle(recMessage);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        synchronized (this) {
+            Message recMessage;
+            try {
+                recMessage = (Message) input.readObject();
+                handle(recMessage);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -106,13 +108,24 @@ public class MessageHandler {
                 myPeer.myBitfield.set(incomingPiece.getIndex());
                 notifyPeersOfPiece(incomingPiece.getSubsetOfPayload(0,3));
                 System.out.println(incomingPiece.getIndex());
-                byte[] nextPiece = myPeer.getNeededPieceIndex(remotePeerId);
-                send(new Request(nextPiece));
+                if(!myPeer.remotePeers.get(remotePeerId).choked) {
+                    byte[] nextPiece = myPeer.getNeededPieceIndex(remotePeerId);
+                    send(new Request(nextPiece));
+                }
+                break;
+            case Type.HAVE:
+                Have incomingHave = (Have)message;
+                int remotePiece = incomingHave.getIndex();
+                myPeer.remotePeers.get(remotePeerId).bitfield.set(remotePiece);
+                amIInterested(remotePeerId);
+                Logger.logHaveMsg(myPeer.peerId, remotePeerId, remotePiece);
+                break;
 
             default:
 //                teardown();
         }
     }
+    //send have messages to every remote peer
     private void notifyPeersOfPiece(byte[] pieceIndex){
         Have have = new Have(pieceIndex);
         for(Integer key : myPeer.remotePeers.keySet()){
