@@ -39,7 +39,7 @@ public class ConnectionWorker implements Runnable {
             Handshake incomingHandshake = (Handshake)input.readObject();  //wait for remote to
             remoteId = incomingHandshake.getIdField();
             msgHandler =  new MessageHandler(input, output, peerInfo, remoteId);
-            peerInfo.remotePeers.put(remoteId, new RemotePeerInfo(remoteId));
+            peerInfo.writeRemotePeets(remoteId, new RemotePeerInfo(remoteId), true);
             peerInfo.remotePeers.get(remoteId).messageHandler = msgHandler;
 
             if(peerInfo.validPeerIds.contains(remoteId)){

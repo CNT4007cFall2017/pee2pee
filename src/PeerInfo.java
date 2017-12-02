@@ -81,6 +81,16 @@ public class PeerInfo {
         }
     }
 
+    public void writeRemotePeets(int pid, RemotePeerInfo rpi, Boolean add) {
+        synchronized (this) {
+            if (add) {
+                remotePeers.put(pid, rpi);
+            } else {
+                remotePeers.remove(pid);
+            }
+        }
+    }
+
     public void setAllBits() {
         myBitfield.set(0, BITFIELD_SIZE);
     }
