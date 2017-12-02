@@ -2,7 +2,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.BitSet;
 
 import Logger.Logger;
 import Message.*;
@@ -39,7 +38,7 @@ public class ConnectionWorker implements Runnable {
             Handshake incomingHandshake = (Handshake)input.readObject();  //wait for remote to
             remoteId = incomingHandshake.getIdField();
             msgHandler =  new MessageHandler(input, output, peerInfo, remoteId);
-            peerInfo.writeRemotePeets(remoteId, new RemotePeerInfo(remoteId), true);
+            peerInfo.writeRemotePeers(remoteId, new RemotePeerInfo(remoteId), true);
             peerInfo.remotePeers.get(remoteId).messageHandler = msgHandler;
 
             if(peerInfo.validPeerIds.contains(remoteId)){
