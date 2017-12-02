@@ -15,8 +15,10 @@ public class FileHandler {
 
         readPeerInfoConfig(peerInfoConfig);
         readCommonConfig(CommonConfig);
+        splitFile();
         connectToPeers();
     }
+
 
     private void readPeerInfoConfig(String configFileName) { //Take in PeerInfo.cfg and read the file
         File configFile = new File(configFileName);
@@ -91,7 +93,22 @@ public class FileHandler {
 
 
     }
+    public void splitFile() {
+        File f = new File("config/" + fileName);
 
+        int sizeOfPiece = myPeer.CommonConfig.get(PeerInfo.PIECE_SIZE); //sets an int for size of individual Piece
+        byte[] buffer = new byte[sizeOfPiece];
+
+        try (FileInputStream fis = new FileInputStream(f);
+             BufferedInputStream bis = new BufferedInputStream(fis)) {
+
+            while (bis.read(buffer) > 0) { //Read buffer to Pieces
+                myPeer.Pieces.add(buffer);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     private void connectToPeers() {
         for (PeerInfo p : peersToConnectTo) {
             // spawn threads for each connection

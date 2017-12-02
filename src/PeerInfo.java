@@ -5,6 +5,7 @@ public class PeerInfo {
     public int port;
     public String hostname;
     public int peerId;
+    public List<byte[]> Pieces;
     //we may no longer need this validPeerIds
     public Set<Integer> validPeerIds;
     public boolean hasFile;
@@ -34,6 +35,7 @@ public class PeerInfo {
         preferredNeighbors = new HashSet<>();
         CommonConfig = new HashMap<>();
         unpreferredNeighbors = new HashSet<>();
+        Pieces = new ArrayList<>();
     }
 
     public PeerInfo(int peerId, String hostname, int port) {
@@ -47,9 +49,10 @@ public class PeerInfo {
         preferredNeighbors = new HashSet<>();
         CommonConfig = new HashMap<>();
         unpreferredNeighbors = new HashSet<>();
+        Pieces = new ArrayList<>();
     }
 
-    public PeerInfo(PeerInfo peerInfo) {
+    public PeerInfo(PeerInfo peerInfo) { //Copy Constructor
         synchronized (this) {
             this.remotePeers = peerInfo.remotePeers;
             this.myBitfield = peerInfo.myBitfield;
@@ -67,6 +70,7 @@ public class PeerInfo {
         this.peerId = peerId;
         this.validPeerIds = validPeerIds;
         hasFile = false;
+        Pieces = new ArrayList<>();
     }
 
     public void writeInterestedPeers(int pid, RemotePeerInfo rpi, Boolean add){
