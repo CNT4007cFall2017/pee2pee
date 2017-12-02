@@ -76,11 +76,11 @@ public class Logger {
     }
 
     public static void logDownloading(int pid1, int pid2, int index, int numPieces) throws IOException {
-        String message = String.format("%s: Peer %d has downloaded the piece %d from %d.\r\nNow the number of pieces it has is %d", LocalDateTime.now(), pid1, index, pid2, numPieces);
+        String message = String.format("%s: Peer %d has downloaded the piece %d from peer %d.\r\nNow the number of pieces it has is %d", LocalDateTime.now(), pid1, index, pid2, numPieces);
         log(message);
     }
 
-    public static void logCompleteDownload(String pid) throws IOException {
+    public static void logCompleteDownload(int pid) throws IOException {
         String message = String.format("%s: Peer %s has downloaded the complete file.", LocalDateTime.now(), pid);
         log(message);
     }

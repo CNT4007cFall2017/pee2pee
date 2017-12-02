@@ -172,6 +172,6 @@ public class PeerInfo {
             }
         }
 
-        FileHandler.mergeFile(outputStream.toByteArray());
+        FileHandler.mergeFile(outputStream.toByteArray(), peerId);
     }
 }

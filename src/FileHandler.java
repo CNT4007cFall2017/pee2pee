@@ -114,8 +114,8 @@ public class FileHandler {
             e.printStackTrace();
         }
     }
-    public static void mergeFile(byte[] pieces) {
-        try(FileOutputStream fos = new FileOutputStream("config/success.jpg")) {
+    public static void mergeFile(byte[] pieces, int peerId) {
+        try(FileOutputStream fos = new FileOutputStream(String.format("config/success%s.jpg", peerId))) {
             fos.write(pieces);
             fos.close();
         } catch (IOException e) {

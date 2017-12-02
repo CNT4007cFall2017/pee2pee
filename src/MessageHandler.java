@@ -114,12 +114,12 @@ public class MessageHandler {
                 byte[] pieceData = incomingPiece.getPieceData();
                 myPeer.newPieces.put(index, pieceData); // TODO: sync this
                 myPeer.myBitfield.set(index);
+                Logger.logDownloading(myPeer.peerId, remotePeerId, index, myPeer.myBitfield.cardinality());
                 notifyPeersOfPiece(incomingPiece.getSubsetOfPayload(0,3));
-                System.out.println(index);
 
                 if (myPeer.downloadComplete()) {
                     myPeer.writeFile();
-                    System.out.println("done");
+                    Logger.logCompleteDownload(myPeer.peerId);
                 } else if (!myPeer.remotePeers.get(remotePeerId).choked) {
                     byte[] nextPiece = myPeer.getNeededPieceIndex(remotePeerId);
                     send(new Request(nextPiece));
