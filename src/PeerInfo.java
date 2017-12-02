@@ -48,11 +48,7 @@ public class PeerInfo {
         preferredNeighbors = new HashSet<>();
         CommonConfig = new HashMap<>();
         unpreferredNeighbors = new HashSet<>();
-<<<<<<< HEAD
         Pieces = new ArrayList<>();
-=======
-
->>>>>>> Dynamic bitfield size on init based on config file and piece size
     }
 
     public PeerInfo(PeerInfo peerInfo) { //Copy Constructor
