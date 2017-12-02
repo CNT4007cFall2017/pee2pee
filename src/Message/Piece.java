@@ -24,7 +24,7 @@ public class Piece extends Message{
 
     public byte[] getSubsetOfPayload(int start, int end){
         byte[] subset = new byte[(end - start) + 1];
-        
+
         for (int i = start; i <= end; i++){
             subset[i - start] = payload[i];
         }
