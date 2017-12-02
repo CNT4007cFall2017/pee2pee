@@ -1,5 +1,6 @@
-import java.rmi.Remote;
+import java.nio.ByteBuffer;
 import java.util.*;
+import Message.Message.*;
 
 public class PeerInfo {
     public int port;
@@ -21,9 +22,7 @@ public class PeerInfo {
     public static final String FILE_NAME = "FileName";
     public static final String FILE_SIZE= "FileSize";
     public static final String PIECE_SIZE= "PieceSize";
-
-
-
+    public static final int PIECE_INDEX_SIZE = 4;
     public static final int BITFIELD_SIZE = 16;
 
     public PeerInfo(int peerId) {
@@ -136,5 +135,15 @@ public class PeerInfo {
             this.preferredNeighbors = peerInfo.preferredNeighbors;
             this.unpreferredNeighbors = peerInfo.unpreferredNeighbors;
         }
+    }
+
+    public byte[] getNeededPieceIndex(int remoteId) {
+        BitSet remoteBitfield = remotePeers.get(remoteId).bitfield;
+        remoteBitfield.xor(myBitfield);
+
+        ByteBuffer bb = ByteBuffer.allocate(PIECE_INDEX_SIZE);
+        bb.putInt(remoteBitfield.nextSetBit(0));
+
+        return bb.array();
     }
 }
