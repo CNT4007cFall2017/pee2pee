@@ -6,6 +6,7 @@ public class FileHandler {
     private Collection<PeerInfo> peersToConnectTo;
     private PeerInfo myPeer;
     private Set<Integer> validPeerIds;
+    private String fileName;
 
     public FileHandler(String peerInfoConfig, String CommonConfig, PeerInfo myPeer) {
         validPeerIds = new HashSet<>();
@@ -73,9 +74,14 @@ public class FileHandler {
             String line;
             while ((line = bufferedReader.readLine()) != null) {    //Will line exists
                 String[] tokens = line.split(" "); //Split line by spaces
-                String attribute = tokens[0];   //
-                int value = Integer.parseInt(tokens[1]);
-                myPeer.CommonConfig.put(attribute, value); //Makes a set using attribute and value
+                if(!tokens[1].contains(".")) {
+                    String attribute = tokens[0];   //
+                    int value = Integer.parseInt(tokens[1]);
+                    myPeer.CommonConfig.put(attribute, value); //Makes a set using attribute and value
+                }else{
+                    fileName = tokens[1];
+                }
+
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
