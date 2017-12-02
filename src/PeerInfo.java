@@ -11,7 +11,7 @@ public class PeerInfo {
     public Set<Integer> validPeerIds;
     public boolean hasFile;
     public BitSet myBitfield;
-    public HashMap<String, Integer> CommonConfig;
+    public HashMap<String, Double> CommonConfig;
     public HashMap<Integer, RemotePeerInfo> interestedPeers;
     public HashMap<Integer, RemotePeerInfo> remotePeers;
     public HashSet<RemotePeerInfo> preferredNeighbors;
@@ -23,8 +23,8 @@ public class PeerInfo {
     public static final String FILE_NAME = "FileName";
     public static final String FILE_SIZE= "FileSize";
     public static final String PIECE_SIZE= "PieceSize";
-    public static int BITFIELD_SIZE;
     public static final int PIECE_INDEX_SIZE = 4;
+    public static int BITFIELD_SIZE;
 
     public PeerInfo(int peerId) {
         this.peerId = peerId;
@@ -48,7 +48,11 @@ public class PeerInfo {
         preferredNeighbors = new HashSet<>();
         CommonConfig = new HashMap<>();
         unpreferredNeighbors = new HashSet<>();
+<<<<<<< HEAD
         Pieces = new ArrayList<>();
+=======
+
+>>>>>>> Dynamic bitfield size on init based on config file and piece size
     }
 
     public PeerInfo(PeerInfo peerInfo) { //Copy Constructor
