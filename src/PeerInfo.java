@@ -14,6 +14,7 @@ public class PeerInfo {
     public HashMap<String, Integer> CommonConfig;
     public HashMap<Integer, RemotePeerInfo> interestedPeers;
     public HashMap<Integer, RemotePeerInfo> remotePeers;
+    public HashMap<Integer, byte[]> newPieces;
     public HashSet<RemotePeerInfo> preferredNeighbors;
     public HashSet<RemotePeerInfo> unpreferredNeighbors;
     //Constants for config file.
@@ -35,6 +36,7 @@ public class PeerInfo {
         CommonConfig = new HashMap<>();
         unpreferredNeighbors = new HashSet<>();
         Pieces = new ArrayList<>();
+        newPieces = new HashMap<>();
     }
 
     public PeerInfo(int peerId, String hostname, int port) {
@@ -49,6 +51,7 @@ public class PeerInfo {
         CommonConfig = new HashMap<>();
         unpreferredNeighbors = new HashSet<>();
         Pieces = new ArrayList<>();
+        newPieces = new HashMap<>();
     }
 
     public PeerInfo(PeerInfo peerInfo) { //Copy Constructor
