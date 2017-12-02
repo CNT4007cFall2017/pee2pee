@@ -36,7 +36,7 @@ public class MessageHandler {
 
     public void send(Message message) {
         try {
-            Thread.sleep(100);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -111,7 +111,7 @@ public class MessageHandler {
                 byte[] piece = myPeer.Pieces.get(pieceIndex);
                 byte[] payload = constructPiecePayload(incomingRequest.getPayload(), piece);
                 send(new Piece(payload));
-                myPeer.writeRequestedPieces(pieceIndex, false );
+//                myPeer.writeRequestedPieces(pieceIndex, false );
                 break;
 
             case Type.PIECE:
@@ -120,6 +120,7 @@ public class MessageHandler {
                 byte[] pieceData = incomingPiece.getPieceData();
                 myPeer.newPieces.put(index, pieceData); // TODO: sync this
                 myPeer.myBitfield.set(index);
+                myPeer.writeRequestedPieces(index, false);
                 Logger.logDownloading(myPeer.peerId, remotePeerId, index, myPeer.myBitfield.cardinality());
                 notifyPeersOfPiece(incomingPiece.getSubsetOfPayload(0,3));
 
@@ -128,8 +129,9 @@ public class MessageHandler {
                     Logger.logCompleteDownload(myPeer.peerId);
                 } else if (!myPeer.remotePeers.get(remotePeerId).choked && !myPeer.requestedPieces.contains(index)) {
                     byte[] nextPiece = myPeer.getNeededPieceIndex(remotePeerId);
+                    ByteBuffer bb = ByteBuffer.wrap(nextPiece);
                     send(new Request(nextPiece));
-                    myPeer.writeRequestedPieces(index, true);
+                    myPeer.writeRequestedPieces(bb.getInt(), true);
                 }
 
                 break;

@@ -40,6 +40,7 @@ public class PeerInfo {
         unpreferredNeighbors = new HashSet<>();
         Pieces = new ArrayList<>();
         newPieces = new HashMap<>();
+        requestedPieces = new HashSet<>();
     }
 
     public PeerInfo(int peerId, String hostname, int port) {
@@ -55,6 +56,7 @@ public class PeerInfo {
         unpreferredNeighbors = new HashSet<>();
         Pieces = new ArrayList<>();
         newPieces = new HashMap<>();
+        requestedPieces = new HashSet<>();
     }
 
     public PeerInfo(PeerInfo peerInfo) { //Copy Constructor
