@@ -142,7 +142,8 @@ public class PeerInfo {
     }
 
     public byte[] getNeededPieceIndex(int remoteId) {
-        BitSet remoteBitfield = remotePeers.get(remoteId).bitfield;
+        BitSet remoteBitfield;
+        remoteBitfield = (BitSet) remotePeers.get(remoteId).bitfield.clone();
         remoteBitfield.xor(myBitfield);
 
         ByteBuffer bb = ByteBuffer.allocate(PIECE_INDEX_SIZE);

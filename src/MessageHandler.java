@@ -1,6 +1,7 @@
 import Logger.Logger;
 import Message.*;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -95,6 +96,17 @@ public class MessageHandler {
             case Type.REQUEST:
                 Request incomingRequest = (Request)message;
                 int pieceIndex = incomingRequest.getPieceIndex();
+                byte[] piece = myPeer.Pieces.get(pieceIndex);
+                byte[] payload = constructPiecePayload(incomingRequest.getPayload(), piece);
+                send(new Piece(payload));
+                break;
+
+            case Type.PIECE:
+                Piece incomingPiece = (Piece)message;
+                myPeer.myBitfield.set(incomingPiece.getIndex());
+                System.out.println(incomingPiece.getIndex());
+                byte[] nextPiece = myPeer.getNeededPieceIndex(remotePeerId);
+                send(new Request(nextPiece));
 
             default:
 //                teardown();
@@ -109,6 +121,18 @@ public class MessageHandler {
             send(new Interested());
         }
 
+    }
+
+    private byte[] constructPiecePayload(byte[] index, byte[] data) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try {
+            outputStream.write(index);
+            outputStream.write(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return outputStream.toByteArray();
     }
 
 }
