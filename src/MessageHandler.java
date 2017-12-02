@@ -47,7 +47,7 @@ public class MessageHandler {
         }
     }
 
-    private void handle(Message message) {
+    private void handle(Message message) throws IOException {
         RemotePeerInfo temp;
         switch (message.getType()) {
             case Type.INTERESTED:
@@ -77,10 +77,12 @@ public class MessageHandler {
 
             case Type.CHOKE:
                 myPeer.setRemoteChoke(remotePeerId, true);
+                Logger.logChoke(myPeer.peerId, remotePeerId);
                 break;
 
             case Type.UNCHOKE:
                 myPeer.setRemoteChoke(remotePeerId, false);
+                Logger.logUnchoke(myPeer.peerId, remotePeerId);
                 break;
 
             case Type.REQUEST:

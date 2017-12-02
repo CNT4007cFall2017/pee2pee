@@ -3,7 +3,7 @@ import java.util.*;
 public class PeerInfo {
     public int port;
     public String hostname;
-    public final int peerId;
+    public int peerId;
     //we may no longer need this validPeerIds
     public Set<Integer> validPeerIds;
     public boolean hasFile;
@@ -31,6 +31,8 @@ public class PeerInfo {
         myBitfield = new BitSet(16);
         interestedPeers = new HashMap<>();
         preferredNeighbors = new HashSet<>();
+        CommonConfig = new HashMap<>();
+        unpreferredNeighbors = new HashSet<>();
     }
 
     public PeerInfo(int peerId, String hostname, int port) {
@@ -41,11 +43,20 @@ public class PeerInfo {
         remotePeers = new HashMap<>();
         myBitfield = new BitSet(16);
         interestedPeers = new HashMap<>();
+        preferredNeighbors = new HashSet<>();
+        CommonConfig = new HashMap<>();
+        unpreferredNeighbors = new HashSet<>();
     }
 
     public PeerInfo(PeerInfo peerInfo) {
-        this(peerInfo.peerId, peerInfo.hostname, peerInfo.port);
+        this.remotePeers = peerInfo.remotePeers;
+        this.myBitfield = peerInfo.myBitfield;
+        this.interestedPeers = peerInfo.interestedPeers;
+        this.preferredNeighbors = peerInfo.preferredNeighbors;
+        this.unpreferredNeighbors = peerInfo.unpreferredNeighbors;
+        this.CommonConfig = peerInfo.CommonConfig;
     }
+
 
     public PeerInfo(int peerId, String hostname, int port, Set<Integer> validPeerIds) {
         this.port = port;

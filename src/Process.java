@@ -1,3 +1,5 @@
+import java.util.Timer;
+
 /**
  * Created by chase on 10/19/2017.
  *
@@ -15,5 +17,7 @@ public class Process {
 
         myPeer = new PeerInfo(peerId);
         fileHandler = new FileHandler("config/PeerInfo.cfg", "config/Common.cfg", myPeer);
+        Timer chokerUnchokerTimer = new Timer();
+        chokerUnchokerTimer.schedule(new ChokerUnchoker(myPeer), (myPeer.CommonConfig.get(PeerInfo.UNCHOKING_INTERVAL) * 1000));
     }
 }

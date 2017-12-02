@@ -50,12 +50,12 @@ public class Logger {
         log(message);
     }
 
-    public static void logUnchoke(String pid1, String pid2) throws IOException {
+    public static void logUnchoke(int pid1, int pid2) throws IOException {
         String message = String.format("%s: Peer %s has the optimistically unchoked neighbor %s", LocalDateTime.now(), pid1, pid2);
         log(message);
     }
 
-    public static void logChoke(String pid1, String pid2) throws IOException {
+    public static void logChoke(int pid1, int pid2) throws IOException {
         String message = String.format("%s: Peer %s is choked by %s", LocalDateTime.now(), pid1, pid2);
         log(message);
     }
