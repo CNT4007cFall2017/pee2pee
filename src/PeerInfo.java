@@ -147,26 +147,28 @@ public class PeerInfo {
     }
 
     public byte[] getNeededPieceIndex(int remoteId) {
-        BitSet remoteBitfield;
-        remoteBitfield = (BitSet) remotePeers.get(remoteId).bitfield.clone();
-        remoteBitfield.xor(myBitfield);
+        synchronized (this) {
+            BitSet remoteBitfield;
+            remoteBitfield = (BitSet) remotePeers.get(remoteId).bitfield.clone();
+            remoteBitfield.xor(myBitfield);
 
-        int[] setIndecies = new int[remoteBitfield.cardinality()];
-        int counter = 0;
-        for (int i = 0; i < BITFIELD_SIZE; i++) {
-            if (remoteBitfield.get(i)) {
-                setIndecies[counter] = i;
-                counter++;
+            int[] setIndecies = new int[remoteBitfield.cardinality()];
+            int counter = 0;
+            for (int i = 0; i < BITFIELD_SIZE; i++) {
+                if (remoteBitfield.get(i)) {
+                    setIndecies[counter] = i;
+                    counter++;
+                }
             }
+
+            int rnd = new Random().nextInt(setIndecies.length);
+            int index = setIndecies[rnd];
+
+            ByteBuffer bb = ByteBuffer.allocate(PIECE_INDEX_SIZE);
+            bb.putInt(index);
+
+            return bb.array();
         }
-
-        int rnd = new Random().nextInt(setIndecies.length);
-        int index = setIndecies[rnd];
-
-        ByteBuffer bb = ByteBuffer.allocate(PIECE_INDEX_SIZE);
-        bb.putInt(index);
-
-        return bb.array();
     }
 
     public boolean downloadComplete() {
