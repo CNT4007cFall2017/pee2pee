@@ -1,3 +1,4 @@
+import java.rmi.Remote;
 import java.util.*;
 
 public class PeerInfo {
@@ -49,12 +50,14 @@ public class PeerInfo {
     }
 
     public PeerInfo(PeerInfo peerInfo) {
-        this.remotePeers = peerInfo.remotePeers;
-        this.myBitfield = peerInfo.myBitfield;
-        this.interestedPeers = peerInfo.interestedPeers;
-        this.preferredNeighbors = peerInfo.preferredNeighbors;
-        this.unpreferredNeighbors = peerInfo.unpreferredNeighbors;
-        this.CommonConfig = peerInfo.CommonConfig;
+        synchronized (this) {
+            this.remotePeers = peerInfo.remotePeers;
+            this.myBitfield = peerInfo.myBitfield;
+            this.interestedPeers = peerInfo.interestedPeers;
+            this.preferredNeighbors = peerInfo.preferredNeighbors;
+            this.unpreferredNeighbors = peerInfo.unpreferredNeighbors;
+            this.CommonConfig = peerInfo.CommonConfig;
+        }
     }
 
 
@@ -78,6 +81,7 @@ public class PeerInfo {
         }
         return bytes;
     }
+
 
     public void setRemoteBitField(int key, Integer pieceIndex) {
         remotePeers.get(key).bitfield.set(pieceIndex);
@@ -105,8 +109,10 @@ public class PeerInfo {
     }
 
     public void reset(PeerInfo peerInfo) {
-        this.remotePeers = peerInfo.remotePeers;
-        this.preferredNeighbors = peerInfo.preferredNeighbors;
-        this.unpreferredNeighbors = peerInfo.unpreferredNeighbors;
+        synchronized (this) {
+            this.remotePeers = peerInfo.remotePeers;
+            this.preferredNeighbors = peerInfo.preferredNeighbors;
+            this.unpreferredNeighbors = peerInfo.unpreferredNeighbors;
+        }
     }
 }
