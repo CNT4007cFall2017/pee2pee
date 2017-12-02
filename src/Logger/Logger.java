@@ -90,7 +90,7 @@ public class Logger {
         log(message);
     }
 
-    private static void log(String msg) throws IOException {
+    private static synchronized void log(String msg) throws IOException {
         try {
             bw = new BufferedWriter(new FileWriter(logFile, true));
             bw.write(msg);

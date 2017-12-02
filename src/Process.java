@@ -18,6 +18,6 @@ public class Process {
         myPeer = new PeerInfo(peerId);
         fileHandler = new FileHandler("config/PeerInfo.cfg", "config/Common.cfg", myPeer);
         Timer chokerUnchokerTimer = new Timer();
-        chokerUnchokerTimer.schedule(new ChokerUnchoker(myPeer), (myPeer.CommonConfig.get(PeerInfo.UNCHOKING_INTERVAL) * 1000));
+        chokerUnchokerTimer.schedule(new ChokerUnchoker(myPeer), 0, (myPeer.CommonConfig.get(PeerInfo.UNCHOKING_INTERVAL) * 1000));
     }
 }
