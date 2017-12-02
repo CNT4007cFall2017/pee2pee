@@ -151,8 +151,20 @@ public class PeerInfo {
         remoteBitfield = (BitSet) remotePeers.get(remoteId).bitfield.clone();
         remoteBitfield.xor(myBitfield);
 
+        int[] setIndecies = new int[remoteBitfield.cardinality()];
+        int counter = 0;
+        for (int i = 0; i < BITFIELD_SIZE; i++) {
+            if (remoteBitfield.get(i)) {
+                setIndecies[counter] = i;
+                counter++;
+            }
+        }
+
+        int rnd = new Random().nextInt(setIndecies.length);
+        int index = setIndecies[rnd];
+
         ByteBuffer bb = ByteBuffer.allocate(PIECE_INDEX_SIZE);
-        bb.putInt(remoteBitfield.nextSetBit(0));
+        bb.putInt(index);
 
         return bb.array();
     }
