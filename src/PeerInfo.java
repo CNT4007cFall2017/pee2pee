@@ -10,7 +10,7 @@ public class PeerInfo {
     public Set<Integer> validPeerIds;
     public boolean hasFile;
     public BitSet myBitfield;
-    public HashMap<String, Double> CommonConfig;
+    public HashMap<String, Integer> CommonConfig;
     public HashMap<Integer, RemotePeerInfo> interestedPeers;
     public HashMap<Integer, RemotePeerInfo> remotePeers;
     public HashSet<RemotePeerInfo> preferredNeighbors;
