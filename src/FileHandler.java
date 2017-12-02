@@ -106,6 +106,16 @@ public class FileHandler {
             while (bis.read(buffer) > 0) { //Read buffer to Pieces
                 myPeer.Pieces.add(buffer);
             }
+            bis.close();
+            fis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void mergeFile(byte[] pieces) {
+        try(FileOutputStream fos = new FileOutputStream("/config/success.jpg")) {
+            fos.write(pieces);
+            fos.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
