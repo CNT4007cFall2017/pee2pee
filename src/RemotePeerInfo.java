@@ -15,7 +15,7 @@ public class RemotePeerInfo {
         pID = pid;
         bytesReceived = 0;
         choked = true;
-        bitfield = new BitSet(16);
+        bitfield = new BitSet(PeerInfo.BITFIELD_SIZE);
     }
 
     public void resetBytes() {

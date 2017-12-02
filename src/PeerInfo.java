@@ -10,7 +10,7 @@ public class PeerInfo {
     public Set<Integer> validPeerIds;
     public boolean hasFile;
     public BitSet myBitfield;
-    public HashMap<String, Integer> CommonConfig;
+    public HashMap<String, Double> CommonConfig;
     public HashMap<Integer, RemotePeerInfo> interestedPeers;
     public HashMap<Integer, RemotePeerInfo> remotePeers;
     public HashSet<RemotePeerInfo> preferredNeighbors;
@@ -23,12 +23,12 @@ public class PeerInfo {
     public static final String FILE_SIZE= "FileSize";
     public static final String PIECE_SIZE= "PieceSize";
     public static final int PIECE_INDEX_SIZE = 4;
-    public static final int BITFIELD_SIZE = 16;
+    public static int BITFIELD_SIZE;
 
     public PeerInfo(int peerId) {
         this.peerId = peerId;
         remotePeers = new HashMap<>();
-        myBitfield = new BitSet(16);
+        myBitfield = new BitSet(BITFIELD_SIZE);
         interestedPeers = new HashMap<>();
         preferredNeighbors = new HashSet<>();
         CommonConfig = new HashMap<>();
@@ -41,11 +41,12 @@ public class PeerInfo {
         this.peerId = peerId;
         hasFile = false;
         remotePeers = new HashMap<>();
-        myBitfield = new BitSet(16);
+        myBitfield = new BitSet(BITFIELD_SIZE);
         interestedPeers = new HashMap<>();
         preferredNeighbors = new HashSet<>();
         CommonConfig = new HashMap<>();
         unpreferredNeighbors = new HashSet<>();
+
     }
 
     public PeerInfo(PeerInfo peerInfo) {
@@ -80,7 +81,7 @@ public class PeerInfo {
         }
     }
 
-    public void writeRemotePeets(int pid, RemotePeerInfo rpi, Boolean add) {
+    public void writeRemotePeers(int pid, RemotePeerInfo rpi, Boolean add) {
         synchronized (this) {
             if (add) {
                 remotePeers.put(pid, rpi);

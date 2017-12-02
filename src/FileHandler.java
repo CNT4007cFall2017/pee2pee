@@ -12,9 +12,9 @@ public class FileHandler {
         validPeerIds = new HashSet<>();
         peersToConnectTo = new ArrayList<>();
         this.myPeer = myPeer;
-
-        readPeerInfoConfig(peerInfoConfig);
         readCommonConfig(CommonConfig);
+        readPeerInfoConfig(peerInfoConfig);
+
         connectToPeers();
     }
 
@@ -76,13 +76,15 @@ public class FileHandler {
                 String[] tokens = line.split(" "); //Split line by spaces
                 if(!tokens[1].contains(".")) {
                     String attribute = tokens[0];   //
-                    int value = Integer.parseInt(tokens[1]);
+                    double value = Integer.parseInt(tokens[1]);
                     myPeer.CommonConfig.put(attribute, value); //Makes a set using attribute and value
                 }else{
                     fileName = tokens[1];
                 }
 
             }
+            PeerInfo.BITFIELD_SIZE =(int)Math.ceil(myPeer.CommonConfig.get(PeerInfo.FILE_SIZE)/myPeer.CommonConfig.get(PeerInfo.PIECE_SIZE));
+            myPeer.myBitfield = new BitSet(PeerInfo.BITFIELD_SIZE);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
