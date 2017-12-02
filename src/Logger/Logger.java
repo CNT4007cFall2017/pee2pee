@@ -51,7 +51,7 @@ public class Logger {
     }
 
     public static void logUnchoke(int pid1, int pid2) throws IOException {
-        String message = String.format("%s: Peer %s has the optimistically unchoked neighbor %s", LocalDateTime.now(), pid1, pid2);
+        String message = String.format("%s: Peer %s has the unchoked peer %s", LocalDateTime.now(), pid2, pid1);
         log(message);
     }
 

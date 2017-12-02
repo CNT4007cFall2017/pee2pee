@@ -1,36 +1,32 @@
 import Message.Choke;
 import Message.Unchoke;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.rmi.Remote;
 import java.util.*;
 
 
 public class ChokerUnchoker extends TimerTask {
     private PeerInfo localPeerInfo;
-    private ArrayList<RemotePeerInfo> remotePeers;
+    private ArrayList<RemotePeerInfo> interestedPeers;
   public ChokerUnchoker (PeerInfo peerInfo) {
       super();
       localPeerInfo = peerInfo;
-      remotePeers = new ArrayList<>();
+      interestedPeers = new ArrayList<>();
   }
 
     public void run() {
         PeerInfo temp = new PeerInfo(localPeerInfo);
 
-        if (temp.remotePeers.size() > 0) {
-            remotePeers.clear();
-            for (int pID : temp.remotePeers.keySet()) {
-                remotePeers.add(temp.remotePeers.get(pID));
+        if (temp.interestedPeers.size() > 0) {
+            interestedPeers.clear();
+            for (int pID : temp.interestedPeers.keySet()) {
+                interestedPeers.add(temp.interestedPeers.get(pID));
             }
-            Collections.sort(remotePeers, new SortByBytes());
+            Collections.sort(interestedPeers, new SortByBytes());
             temp.resetBytesReceived();
             int numPreferred = temp.CommonConfig.get(PeerInfo.NUM_PREFERRED);
 
-            for (int i = 0; i < remotePeers.size(); i++) {
-                RemotePeerInfo currRemotePeer = remotePeers.get(i);
+            for (int i = 0; i < interestedPeers.size(); i++) {
+                RemotePeerInfo currRemotePeer = interestedPeers.get(i);
                 if (i < numPreferred) {
                     temp.preferredNeighbors.add(currRemotePeer);
                     temp.unpreferredNeighbors.remove(currRemotePeer);
